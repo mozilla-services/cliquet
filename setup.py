@@ -19,6 +19,11 @@ ENTRY_POINTS = {
         'main = readinglist:main',
     ]}
 
+DEPENDENCY_LINKS = [
+    'https://github.com/mozilla-services/cliquet/tarball/cliquet'
+    '#egg=cliquet-0.3.dev0',
+]
+
 
 setup(name='readinglist',
       version='0.3.dev0',
@@ -37,4 +42,5 @@ setup(name='readinglist',
       include_package_data=True,
       zip_safe=False,
       install_requires=REQUIREMENTS,
-      entry_points=ENTRY_POINTS)
+      entry_points=ENTRY_POINTS,
+      dependency_links=DEPENDENCY_LINKS)
