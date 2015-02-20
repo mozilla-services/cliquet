@@ -20,7 +20,7 @@ ENTRY_POINTS = {
     ]}
 
 DEPENDENCY_LINKS = [
-    'https://github.com/mozilla-services/cliquet/tarball/cliquet'
+    'https://github.com/mozilla-services/cliquet/tarball/master'
     '#egg=cliquet-0.3.dev0',
 ]
 
