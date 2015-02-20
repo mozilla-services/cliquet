@@ -3,10 +3,10 @@ import colander
 from colander import SchemaNode, String
 from pyramid import httpexceptions
 
-from readinglist import errors
-from readinglist.resource import crud, BaseResource, ResourceSchema, TimeStamp
-from readinglist.utils import strip_whitespace
-from readinglist.schema import URL
+from cliquet import errors
+from cliquet.resource import crud, BaseResource, ResourceSchema, TimeStamp
+from cliquet.utils import strip_whitespace
+from cliquet.schema import URL
 
 TITLE_MAX_LENGTH = 1024
 

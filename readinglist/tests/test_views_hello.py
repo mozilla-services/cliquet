@@ -24,7 +24,7 @@ class HelloViewTest(BaseWebTest, unittest.TestCase):
         eos = '2069-02-21'
         with mock.patch.dict(
                 self.app.app.registry.settings,
-                [('readinglist.eos', eos)]):
+                [('cliquet.eos', eos)]):
             response = self.app.get('/')
             self.assertEqual(response.json['eos'], eos)
 

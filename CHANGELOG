@@ -7,7 +7,15 @@ This document describes changes between each past release.
 0.3 (unreleased)
 ----------------
 
-- Nothing changed yet.
+**Breaking changes**
+
+- Most configuration entries were renamed, see `config/readinglist.ini`
+  example to port your configuration.
+
+**Internal changes**
+
+- Main code base was split into a separate project
+  `Cliquet <https://github.com/mozilla-services/cliquet>`_
 
 
 0.2.2 (2015-02-13)

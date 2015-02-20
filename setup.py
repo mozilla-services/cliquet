@@ -9,22 +9,20 @@ with open(os.path.join(here, 'README.rst')) as f:
 REQUIREMENTS = [
     'colander',
     'cornice',
-    'python-dateutil',
-    'pyfxa',
-    'pyramid_multiauth',
-    'redis',
-    'requests',
     'six',
     'waitress',
+    'cliquet'
 ]
 
-DEPENDENCY_LINKS = [
-    'https://github.com/mozilla/PyFxA/tarball/master#egg=PyFxA-0.0.3dev',
-]
 ENTRY_POINTS = {
     'paste.app_factory': [
         'main = readinglist:main',
     ]}
+
+DEPENDENCY_LINKS = [
+    'https://github.com/mozilla-services/cliquet/tarball/master'
+    '#egg=cliquet-0.3.dev0',
+]
 
 
 setup(name='readinglist',
@@ -44,5 +42,5 @@ setup(name='readinglist',
       include_package_data=True,
       zip_safe=False,
       install_requires=REQUIREMENTS,
-      dependency_links=DEPENDENCY_LINKS,
-      entry_points=ENTRY_POINTS)
+      entry_points=ENTRY_POINTS,
+      dependency_links=DEPENDENCY_LINKS)
