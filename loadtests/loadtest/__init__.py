@@ -36,18 +36,7 @@ class TestBasic(TestCase):
         self.basic_auth = HTTPBasicAuth(self.random_user, 'secret')
 
         # Create at least some records for this user
-        total_records = random.randint(3, 100)
-        for i in range(total_records):
-            self.create()
-
-    def incr_counter(self, name):
-        """Override parent method to add a safety check if session is not yet
-        running.
-        """
-        hit, user, current_hit, current_user = self.session.loads_status
-        if current_user is None:
-            return
-        return super(TestBasic, self).incr_counter(name)
+        self.nb_initial_records = random.randint(3, 100)
 
     def api_url(self, path):
         return "{0}/v0/{1}".format(self.server_url, path)
@@ -59,6 +48,10 @@ class TestBasic(TestCase):
 
             This method is called as many times as number of hits.
         """
+        while self.nb_initial_records > 0:
+            self.create()
+            self.nb_initial_records -= 1
+
         resp = self.session.get(self.api_url('articles'), auth=self.basic_auth)
         records = resp.json()['items']
 
