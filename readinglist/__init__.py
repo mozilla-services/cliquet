@@ -2,6 +2,7 @@ import pkg_resources
 import logging
 
 from pyramid.config import Configurator
+from cliquet import initialize_cliquet
 
 # Module version, as defined in PEP-0396.
 __version__ = pkg_resources.get_distribution(__package__).version
@@ -15,10 +16,6 @@ logger = logging.getLogger(__name__)
 
 def main(global_config, **settings):
     config = Configurator(settings=settings)
-
-    # Include cornice and discover views.
-    config.include("cliquet", route_prefix=API_VERSION)
-    config.route_prefix = API_VERSION
-
+    initialize_cliquet(config, version=__version__)
     config.scan("readinglist.views")
     return config.make_wsgi_app()
