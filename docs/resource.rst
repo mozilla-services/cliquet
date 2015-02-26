@@ -1,21 +1,19 @@
-#################
-API Documentation
-#################
+##################
+Resource endpoints
+##################
 
-.. _http-apis:
+.. _resource-endpoints:
 
 GET /articles
 =============
 
-**Requires an FxA OAuth authentication**
+**Requires authentication**
 
-Returns all articles of the current user.
+Returns all records of the current user for this resource.
 
 The returned value is a JSON mapping containing:
 
-- ``items``: the list of articles, with exhaustive attributes
-
-`See all article attributes <https://github.com/mozilla-services/readinglist/wiki/API-Design-proposal#data-model>`_
+- ``items``: the list of records, with exhaustive attributes
 
 A ``Total-Records`` header is sent back to indicate the estimated
 total number of records included in the response.
@@ -57,7 +55,7 @@ Prefix attribute name with ``not_``:
 * ``/articles?not_status=0``
 
 :note:
-    Will return an error if an attribute is unknown.
+    Will return an error if a field is unknown.
 
 :note:
     The ``Last-Modified`` response header will always be the same as
@@ -75,13 +73,13 @@ Sorting
     Ordering on a boolean field gives ``true`` values first.
 
 :note:
-    Will return an error if an attribute is unknown.
+    Will return an error if a field is unknown.
 
 
 Counting
 --------
 
-In order to count the number of records, by status for example,
+In order to count the number of records, for a specific field value for example,
 without fetching the actual collection, a ``HEAD`` request can be
 used. The ``Total-Records`` response header will then provide the
 total number of records.
@@ -148,20 +146,16 @@ Filtering, sorting and paginating can all be combined together.
 POST /articles
 ==============
 
-**Requires an FxA OAuth authentication**
+**Requires authentication**
 
-Used to create an article on the server. The POST body is a JSON
-mapping containing:
+Used to create a record on the server. The POST body is a JSON
+mapping containing the values of the resource schema fields.
 
 - ``url``
 - ``title``
 - ``added_by``
 
-:note:
-    Since the device which added the article can differ from the current device
-    (e.g. while importing), the device name is not provided through a request header.
-
-The POST response body is the newly created record, if all posted values are valid. Additional optional attributes can also be specified:
+The POST response body is the newly created record, if all posted values are valid.
 
 If the request header ``If-Unmodified-Since`` is provided, and if the record has
 changed meanwhile, a ``412 Precondition failed`` error is returned.
@@ -207,7 +201,8 @@ For v2, the server will fetch the content, and assign the following attributes w
 Validation
 ----------
 
-If the posted values are invalid (e.g. *added_on is not an integer*) an error response is returned with status ``400``. `See details on error responses <https://github.com/mozilla-services/readinglist/wiki/API-Design-proposal#error-responses>`_.
+If the posted values are invalid (e.g. *field value is not an integer*)
+an error response is returned with status ``400``.
 
 
 :note:
@@ -229,18 +224,34 @@ Articles URL are unique per user (both ``url`` and ``resolved_url``).
     (e.g. http://news.com/day-1.html#paragraph1, http://spa.com/#/content/3)
 
 :note:
-    Deleted items should be taken into account for URL unicity.
+    Deleted records are not taken into account for field unicity.
 
-If an article is created with an URL that already exists, a ``200`` response
-is returned with the existing record in the body.
+If the a conflict occurs, an error response is returned with status ``409``.
+A ``existing`` attribute in the response gives the offending record.
+
+
+DELETE /articles
+================
+
+**Requires authentication**
+
+Delete multiple records. **Disabled by default**, see :ref:`configuration`.
+
+The DELETE response is a JSON mapping with an ``items`` attribute, returning
+the list of records that were deleted.
+
+It supports the same filtering capabilities as GET.
+
+If the request header ``If-Unmodified-Since`` is provided, and if the collection
+has changed meanwhile, a ``412 Precondition failed`` error is returned.
 
 
 GET /articles/<id>
 ==================
 
-**Requires an FxA OAuth authentication**
+**Requires authentication**
 
-Returns a specific article by its id.
+Returns a specific record by its id.
 
 For convenience and consistency, a header ``Last-Modified`` will also repeat the
 value of ``last_modified``.
@@ -248,17 +259,13 @@ value of ``last_modified``.
 If the request header ``If-Modified-Since`` is provided, and if the record has not
 changed meanwhile, a ``304 Not Modified`` is returned.
 
-:note:
-    Even though article URLs are unique together, we use the article id field
-    to target individual records.
-
 
 DELETE /articles/<id>
 =====================
 
-**Requires an FxA OAuth authentication**
+**Requires authentication**
 
-Delete a specific article by its id.
+Delete a specific record by its id.
 
 The DELETE response is the record that was deleted.
 
@@ -276,9 +283,9 @@ changed meanwhile, a ``412 Precondition failed`` error is returned.
 PATCH /articles/<id>
 ====================
 
-**Requires an FxA OAuth authentication**
+**Requires authentication**
 
-Modify a specific article by its id. The PATCH body is a JSON
+Modify a specific record by its id. The PATCH body is a JSON
 mapping containing a subset of articles fields.
 
 The PATCH response is the modified record (full).
@@ -300,6 +307,8 @@ of the API, the following fields are also modifiable:
 - ``resolved_title``
 
 **Errors**
+
+If a read-only field is modified, a ``400 Bad request`` error is returned.
 
 If the record is missing (or already deleted), a ``404 Not Found`` error is returned. The client might
 decide to ignore it.
