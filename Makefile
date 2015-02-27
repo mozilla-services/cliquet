@@ -14,11 +14,12 @@ OBJECTS = .venv .coverage
 
 all: install
 install: $(INSTALL_STAMP)
+	$(VENV)/bin/pip install --process-dependency-links -U -e .
+
 $(INSTALL_STAMP): $(PYTHON)
-	$(PYTHON) setup.py develop
 	touch $(INSTALL_STAMP)
 
-install-dev: $(INSTALL_STAMP) $(DEV_STAMP)
+install-dev: install $(DEV_STAMP)
 $(DEV_STAMP): $(PYTHON)
 	$(VENV)/bin/pip install -r dev-requirements.txt
 	touch $(DEV_STAMP)
