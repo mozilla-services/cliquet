@@ -4,9 +4,9 @@ from colander import SchemaNode, String
 from pyramid import httpexceptions
 
 from cliquet import errors
-from cliquet.resource import crud, BaseResource, ResourceSchema, TimeStamp
+from cliquet.resource import crud, BaseResource, ResourceSchema
 from cliquet.utils import strip_whitespace
-from cliquet.schema import URL
+from cliquet.schema import URL, TimeStamp
 
 TITLE_MAX_LENGTH = 1024
 
