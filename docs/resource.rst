@@ -4,6 +4,10 @@ Resource endpoints
 
 .. _resource-endpoints:
 
+To ease testing, you can use `httpie <https://github.com/jkbr/httpie>`_ in
+order to make requests. Examples of use with httpie are provided when possible.
+
+
 GET /articles
 =============
 
@@ -144,6 +148,58 @@ Filtering, sorting and paginating can all be combined together.
 * ``/articles?_sort=-last_modified&_limit=100``
 
 
+Example
+-------
+
+::
+
+    http POST http://localhost:8000/v1/articles?_sort=-last_modified -v --auth "admin:"
+
+
+.. code-block:: http
+
+    GET /v0/articles?_sort=-last_modified HTTP/1.1
+    Accept: */*
+    Accept-Encoding: gzip, deflate
+    Authorization: Basic YWRtaW46
+    Host: localhost:8000
+    User-Agent: HTTPie/0.8.0
+
+    HTTP/1.1 200 OK
+    Access-Control-Expose-Headers: Backoff, Retry-After, Last-Modified, Total-Records, Alert, Next-Page
+    Content-Length: 610
+    Content-Type: application/json; charset=UTF-8
+    Date: Fri, 27 Feb 2015 16:20:08 GMT
+    Last-Modified: 1425053903124
+    Server: waitress
+    Total-Records: 1
+
+    {
+        "items": [
+            {
+                "added_by": "Natim",
+                "added_on": 1425053903123,
+                "excerpt": "",
+                "favorite": false,
+                "id": "ff795c43c02145a4b7a5df5260ee182d",
+                "is_article": true,
+                "last_modified": 1425053903124,
+                "marked_read_by": null,
+                "marked_read_on": null,
+                "read_position": 0,
+                "resolved_title": "The Hawk Authorization protocol",
+                "resolved_url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/",
+                "status": 0,
+                "stored_on": 1425053903123,
+                "title": "The Hawk Authorization protocol",
+                "unread": true,
+                "url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/",
+                "word_count": null
+            }
+        ]
+    }
+
+
 POST /articles
 ==============
 
@@ -225,6 +281,61 @@ Articles URL are unique per user (both ``url`` and ``resolved_url``).
 If the a conflict occurs, an error response is returned with status ``409``.
 A ``existing`` attribute in the response gives the offending record.
 
+Example
+-------
+
+::
+    http POST http://localhost:8000/v0/articles \
+        title="The Hawk Authorization protocol" \
+        url=https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/ \
+        added_by=Natim \
+        --auth "admin:" -v
+
+.. code-block:: http
+
+    POST /v0/articles HTTP/1.1
+    Accept: application/json
+    Accept-Encoding: gzip, deflate
+    Authorization: Basic YWRtaW46
+    Content-Length: 150
+    Content-Type: application/json; charset=utf-8
+    Host: localhost:8000
+    User-Agent: HTTPie/0.8.0
+
+    {
+        "added_by": "Natim",
+        "title": "The Hawk Authorization protocol",
+        "url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/"
+    }
+
+    HTTP/1.1 201 Created
+    Access-Control-Expose-Headers: Backoff, Retry-After, Last-Modified, Total-Records, Alert, Next-Page
+    Content-Length: 597
+    Content-Type: application/json; charset=UTF-8
+    Date: Fri, 27 Feb 2015 16:18:23 GMT
+    Server: waitress
+
+    {
+        "added_by": "Natim",
+        "added_on": 1425053903123,
+        "excerpt": "",
+        "favorite": false,
+        "id": "ff795c43c02145a4b7a5df5260ee182d",
+        "is_article": true,
+        "last_modified": 1425053903124,
+        "marked_read_by": null,
+        "marked_read_on": null,
+        "read_position": 0,
+        "resolved_title": "The Hawk Authorization protocol",
+        "resolved_url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/",
+        "status": 0,
+        "stored_on": 1425053903123,
+        "title": "The Hawk Authorization protocol",
+        "unread": true,
+        "url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/",
+        "word_count": null
+    }
+
 
 DELETE /articles
 ================
@@ -241,6 +352,42 @@ It supports the same filtering capabilities as GET.
 If the request header ``If-Unmodified-Since`` is provided, and if the collection
 has changed meanwhile, a ``412 Precondition failed`` error is returned.
 
+Example
+-------
+
+::
+
+    http DELETE http://localhost:8000/v0/articles \
+        --auth "admin:" -v
+
+.. code-block:: http
+
+    DELETE /v0/articles HTTP/1.1
+    Accept: */*
+    Accept-Encoding: gzip, deflate
+    Authorization: Basic YWRtaW46
+    Content-Length: 0
+    Host: localhost:8000
+    User-Agent: HTTPie/0.8.0
+
+
+    HTTP/1.1 200 OK
+    Access-Control-Expose-Headers: Backoff, Retry-After, Last-Modified, Alert
+    Content-Length: 100
+    Content-Type: application/json; charset=UTF-8
+    Date: Fri, 27 Feb 2015 16:27:55 GMT
+    Server: waitress
+
+    {
+        "items": [
+            {
+                "id": "30afb809ca7745a58496a09c6a4afcac",
+                "last_modified": 1425054475110,
+                "status": 2
+            }
+        ]
+    }
+
 
 GET /articles/<id>
 ==================
@@ -254,6 +401,53 @@ value of ``last_modified``.
 
 If the request header ``If-Modified-Since`` is provided, and if the record has not
 changed meanwhile, a ``304 Not Modified`` is returned.
+
+Example
+-------
+
+::
+    http GET http://localhost:8000/v0/articles/30afb809ca7745a58496a09c6a4afcac \
+        --auth "admin:" -v
+
+
+.. code-block:: http
+
+    GET /v0/articles/30afb809ca7745a58496a09c6a4afcac HTTP/1.1
+    Accept: */*
+    Accept-Encoding: gzip, deflate
+    Authorization: Basic YWRtaW46
+    Host: localhost:8000
+    User-Agent: HTTPie/0.8.0
+
+
+    HTTP/1.1 200 OK
+    Access-Control-Expose-Headers: Backoff, Retry-After, Last-Modified, Alert
+    Content-Length: 597
+    Content-Type: application/json; charset=UTF-8
+    Date: Fri, 27 Feb 2015 16:22:38 GMT
+    Last-Modified: 1425054146681
+    Server: waitress
+
+    {
+        "added_by": "Natim",
+        "added_on": 1425054146680,
+        "excerpt": "",
+        "favorite": false,
+        "id": "30afb809ca7745a58496a09c6a4afcac",
+        "is_article": true,
+        "last_modified": 1425054146681,
+        "marked_read_by": null,
+        "marked_read_on": null,
+        "read_position": 0,
+        "resolved_title": "The Hawk Authorization protocol",
+        "resolved_url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/",
+        "status": 0,
+        "stored_on": 1425054146680,
+        "title": "The Hawk Authorization protocol",
+        "unread": true,
+        "url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/",
+        "word_count": null
+    }
 
 
 DELETE /articles/<id>
@@ -274,6 +468,38 @@ changed meanwhile, a ``412 Precondition failed`` error is returned.
 :note:
     Once deleted, an article will appear in the collection with a deleted status
     (``deleted=true``) and will have most of its fields empty.
+
+
+Example
+-------
+
+::
+
+    http DELETE http://localhost:8000/v0/articles/ff795c43c02145a4b7a5df5260ee182d \
+        --auth "admin:" -v
+
+.. code-block:: http
+
+    DELETE /v0/articles/ff795c43c02145a4b7a5df5260ee182d HTTP/1.1
+    Accept: */*
+    Accept-Encoding: gzip, deflate
+    Authorization: Basic YWRtaW46
+    Content-Length: 0
+    Host: localhost:8000
+    User-Agent: HTTPie/0.8.0
+
+    HTTP/1.1 200 OK
+    Access-Control-Expose-Headers: Backoff, Retry-After, Last-Modified, Alert
+    Content-Length: 87
+    Content-Type: application/json; charset=UTF-8
+    Date: Fri, 27 Feb 2015 16:21:00 GMT
+    Server: waitress
+
+    {
+        "id": "ff795c43c02145a4b7a5df5260ee182d",
+        "last_modified": 1425054060041,
+        "status": 2
+    }
 
 
 PATCH /articles/<id>
@@ -345,3 +571,57 @@ If changing the article ``resolved_url`` violates the unicity constraint, a
 
     Note that ``url`` is a readonly field, and thus cannot generate conflicts
     here.
+
+Example
+-------
+
+::
+
+    http PATCH http://localhost:8000/v0/articles/30afb809ca7745a58496a09c6a4afcac \
+        title="What’s Hawk authentication and how to use it?" \
+        If-Unmodified-Since:1425054146681 \
+        --auth "admin:" -v
+
+.. code-block:: http
+
+    PATCH /v0/articles/30afb809ca7745a58496a09c6a4afcac HTTP/1.1
+    Accept: application/json
+    Accept-Encoding: gzip, deflate
+    Authorization: Basic YWRtaW46
+    Content-Length: 63
+    Content-Type: application/json; charset=utf-8
+    Host: localhost:8000
+    If-Unmodified-Since: 1425054146681
+    User-Agent: HTTPie/0.8.0
+
+    {
+        "title": "What’s Hawk authentication and how to use it?"
+    }
+
+    HTTP/1.1 200 OK
+    Access-Control-Expose-Headers: Backoff, Retry-After, Last-Modified, Alert
+    Content-Length: 616
+    Content-Type: application/json; charset=UTF-8
+    Date: Fri, 27 Feb 2015 16:24:21 GMT
+    Server: waitress
+
+    {
+        "added_by": "Natim",
+        "added_on": 1425054146680,
+        "excerpt": "",
+        "favorite": false,
+        "id": "30afb809ca7745a58496a09c6a4afcac",
+        "is_article": true,
+        "last_modified": 1425054261938,
+        "marked_read_by": null,
+        "marked_read_on": null,
+        "read_position": 0,
+        "resolved_title": "The Hawk Authorization protocol",
+        "resolved_url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/",
+        "status": 0,
+        "stored_on": 1425054146680,
+        "title": "What’s Hawk authentication and how to use it?",
+        "unread": true,
+        "url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/",
+        "word_count": null
+    }
