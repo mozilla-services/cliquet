@@ -6,6 +6,10 @@ here = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(here, 'README.rst')) as f:
     README = f.read()
 
+with open(os.path.join(here, 'CHANGELOG.rst')) as f:
+    CHANGELOG = f.read()
+
+
 REQUIREMENTS = [
     'colander',
     'cornice',
@@ -28,7 +32,7 @@ DEPENDENCY_LINKS = [
 setup(name='readinglist',
       version='0.3.dev0',
       description='readinglist',
-      long_description=README,
+      long_description=README + "\n\n" + CHANGELOG,
       classifiers=[
           "Programming Language :: Python",
           "Topic :: Internet :: WWW/HTTP",

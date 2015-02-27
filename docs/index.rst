@@ -25,6 +25,7 @@ Contents:
    versionning
    backoff
    errors
+   changelog
 
 
 Indices and tables
