@@ -52,8 +52,8 @@ Bearer Token. `See Firefox Account documentation about this behavior
     Server: waitress
 
     {
-        "client_id": "89513028159972bc", 
-        "oauth_uri": "https://oauth-stable.dev.lcip.org", 
+        "client_id": "89513028159972bc",
+        "oauth_uri": "https://oauth-stable.dev.lcip.org",
         "scope": "profile"
     }
 
@@ -75,6 +75,6 @@ Basic Auth
 ==========
 
 In addition to OAuth, *Basic Auth* can be enabled in the configuration using
-``readinglist.basic_auth_backdoor = true``.
+``cliquet.basic_auth_enabled = true``.
 
 Articles will then be stored for any username/password combination provided.
