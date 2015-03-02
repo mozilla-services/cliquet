@@ -1,3 +1,4 @@
+import mock
 from .support import BaseWebTest, unittest
 
 
@@ -8,17 +9,21 @@ MINIMALIST_ARTICLE = dict(title="MoFo",
 
 class IntegrationTest(BaseWebTest, unittest.TestCase):
     def test_all_views_does_not_accept_basic_auth_when_deactivated(self):
-        headers = {'Authorization': 'Basic YWJjOmFi',
-                   'Content-Type': 'application/json'}
-        self.app.get('/articles', status=401, headers=headers)
-        self.app.post_json('/articles', MINIMALIST_ARTICLE, status=401,
-                           headers=headers)
+        with mock.patch.dict(
+                self.app.app.registry.settings,
+                [('cliquet.basic_auth_enabled', False)]):
 
-        url = '/articles/:id'
-        self.app.get(url, status=401, headers=headers)
-        self.app.patch_json(url, MINIMALIST_ARTICLE, status=401,
-                            headers=headers)
-        self.app.delete(url, status=401, headers=headers)
+            headers = {'Authorization': 'Basic YWJjOmFi',
+                       'Content-Type': 'application/json'}
+            self.app.get('/articles', status=401, headers=headers)
+            self.app.post_json('/articles', MINIMALIST_ARTICLE, status=401,
+                               headers=headers)
+
+            url = '/articles/:id'
+            self.app.get(url, status=401, headers=headers)
+            self.app.patch_json(url, MINIMALIST_ARTICLE, status=401,
+                                headers=headers)
+            self.app.delete(url, status=401, headers=headers)
 
     def test_replacing_records_is_not_allowed_even_logged_out(self):
         resp = self.app.put_json('/articles/:id',
@@ -167,6 +172,26 @@ class ReadArticleModificationTest(BaseWebTest, unittest.TestCase):
                                    headers=self.headers)
         self.assertEqual(resp.json['last_modified'],
                          self.record['last_modified'])
+
+    def test_body_behavior_set_to_diff_return_only_diff(self):
+        body = {'unread': True, 'read_position': 10}
+        self.headers.update({
+            'Response-Behavior': 'diff'
+        })
+        resp = self.app.patch_json(self.url,
+                                   body,
+                                   headers=self.headers)
+        self.assertDictEqual(resp.json, {'read_position': 0})
+
+    def test_body_behavior_set_to_light_return_only_changes(self):
+        body = {'unread': True, 'read_position': 10}
+        self.headers.update({
+            'Response-Behavior': 'light'
+        })
+        resp = self.app.patch_json(self.url,
+                                   body,
+                                   headers=self.headers)
+        self.assertDictEqual(resp.json, {'unread': True, 'read_position': 0})
 
 
 class ConflictingArticleTest(BaseWebTest, unittest.TestCase):

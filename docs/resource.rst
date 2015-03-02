@@ -286,7 +286,8 @@ mapping containing a subset of articles fields.
 
 The PATCH response is the modified record (full).
 
-**Modifiable fields**
+Modifiable fields
+-----------------
 
 - ``title``
 - ``excerpt``
@@ -302,7 +303,146 @@ of the API, the following fields are also modifiable:
 - ``resolved_url``
 - ``resolved_title``
 
-**Errors**
+Response behavior
+-----------------
+
+When doing a PATCH you can choose which kind of response you want to get.
+
+You have got 3 behaviors:
+
+- ``full``: The default behavior, give you back the full new record.
+- ``light``: Give you back the new fields values modified by your request
+- ``diff``: Give you back the new fields values that don't match your request fields values.
+
+As an example:
+
+Starting with::
+
+    http POST http://localhost:8000/v0/articles \
+        added_by=Natim title=Trunat url=http://www.trunat.fr \
+        --auth 'Natim:' -v
+
+.. code-block:: http
+    POST /v0/articles HTTP/1.1
+    Accept: application/json
+    Accept-Encoding: gzip, deflate
+    Authorization: Basic TmF0aW06
+    Content-Length: 71
+    Content-Type: application/json; charset=utf-8
+    Host: localhost:8000
+    User-Agent: HTTPie/0.8.0
+
+    {
+        "added_by": "Natim", 
+        "title": "Trunat", 
+        "url": "http://www.trunat.fr"
+    }
+
+    HTTP/1.1 201 Created
+    Access-Control-Expose-Headers: Backoff, Retry-After, Alert
+    Content-Length: 439
+    Content-Type: application/json; charset=UTF-8
+    Date: Mon, 02 Mar 2015 16:56:46 GMT
+    Server: waitress
+
+    {
+        "added_by": "Natim", 
+        "added_on": 1425315406801, 
+        "excerpt": "", 
+        "favorite": false, 
+        "id": "8412b7d7da40467e9afbad8b6f15c20f", 
+        "is_article": true, 
+        "last_modified": 1425315406802, 
+        "marked_read_by": null, 
+        "marked_read_on": null, 
+        "read_position": 0, 
+        "resolved_title": "Trunat", 
+        "resolved_url": "http://www.trunat.fr", 
+        "status": 0, 
+        "stored_on": 1425315406801, 
+        "title": "Trunat", 
+        "unread": true, 
+        "url": "http://www.trunat.fr", 
+        "word_count": null
+    }
+
+Calling with ``Response-Behavior: light``
+:::::::::::::::::::::::::::::::::::::::::
+
+    http PATCH http://localhost:8000/v0/articles/8412b7d7da40467e9afbad8b6f15c20f \
+        unread=False marked_read_on=1425316211577 marked_read_by=Ipad \
+        Response-Behavior:light \
+        --auth 'Natim:' -v
+
+.. code-block:: http
+
+    PATCH /v0/articles/8412b7d7da40467e9afbad8b6f15c20f HTTP/1.1
+    Accept: application/json
+    Accept-Encoding: gzip, deflate
+    Authorization: Basic TmF0aW06
+    Content-Length: 80
+    Content-Type: application/json; charset=utf-8
+    Host: localhost:8000
+    Response-Behavior: light
+    User-Agent: HTTPie/0.8.0
+
+    {
+        "marked_read_by": "Ipad", 
+        "marked_read_on": "1425316211577", 
+        "unread": "False"
+    }
+
+    HTTP/1.1 200 OK
+    Access-Control-Expose-Headers: Backoff, Retry-After, Last-Modified, Alert
+    Content-Length: 76
+    Content-Type: application/json; charset=UTF-8
+    Date: Mon, 02 Mar 2015 17:16:11 GMT
+    Server: waitress
+
+    {
+        "marked_read_by": "Ipad", 
+        "marked_read_on": 1425316211577, 
+        "unread": false
+    }
+
+Calling with ``Response-Behavior: diff``
+::::::::::::::::::::::::::::::::::::::::
+
+    http PATCH http://localhost:8000/v0/articles/8412b7d7da40467e9afbad8b6f15c20f \
+        unread=False marked_read_on=1425316211577 marked_read_by=Ipad \
+        Response-Behavior:diff \
+        --auth 'Natim:' -v
+
+.. code-block:: http
+
+    PATCH /v0/articles/8412b7d7da40467e9afbad8b6f15c20f HTTP/1.1
+    Accept: application/json
+    Accept-Encoding: gzip, deflate
+    Authorization: Basic TmF0aW06
+    Content-Length: 80
+    Content-Type: application/json; charset=utf-8
+    Host: localhost:8000
+    Response-Behavior: light
+    User-Agent: HTTPie/0.8.0
+
+    {
+        "marked_read_by": "Ipad", 
+        "marked_read_on": "1425316211577", 
+        "unread": "False"
+    }
+
+    HTTP/1.1 200 OK
+    Access-Control-Expose-Headers: Backoff, Retry-After, Last-Modified, Alert
+    Content-Length: 2
+    Content-Type: application/json; charset=UTF-8
+    Date: Mon, 02 Mar 2015 17:16:11 GMT
+    Server: waitress
+
+    {}
+
+
+Errors
+------
 
 If a read-only field is modified, a ``400 Bad request`` error is returned.
 
