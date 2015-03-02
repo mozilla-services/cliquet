@@ -279,4 +279,4 @@ class DeletedArticleTest(BaseWebTest, unittest.TestCase):
                             headers=self.headers)
         records = resp.json['items']
         self.assertEqual(records[0]['deleted'], True)
-        self.assertEqual(records[1]['deleted'], False)
+        self.assertNotIn('deleted', records[1])
