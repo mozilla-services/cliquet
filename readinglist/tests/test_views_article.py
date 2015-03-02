@@ -174,7 +174,7 @@ class ReadArticleModificationTest(BaseWebTest, unittest.TestCase):
                          self.record['last_modified'])
 
     def test_body_behavior_set_to_diff_return_only_diff(self):
-        body = {'unread': True, 'read_position': 10}
+        body = {'unread': "True", 'read_position': 10}
         self.headers.update({
             'Response-Behavior': 'diff'
         })
@@ -184,7 +184,7 @@ class ReadArticleModificationTest(BaseWebTest, unittest.TestCase):
         self.assertDictEqual(resp.json, {'read_position': 0})
 
     def test_body_behavior_set_to_light_return_only_changes(self):
-        body = {'unread': True, 'read_position': 10}
+        body = {'unread': "True", 'read_position': 10}
         self.headers.update({
             'Response-Behavior': 'light'
         })

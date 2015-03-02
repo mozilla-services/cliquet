@@ -5,7 +5,7 @@ from pyramid import httpexceptions
 
 from cliquet import errors
 from cliquet.resource import crud, BaseResource, ResourceSchema
-from cliquet.utils import strip_whitespace
+from cliquet.utils import strip_whitespace, native_value
 from cliquet.schema import URL, TimeStamp
 
 TITLE_MAX_LENGTH = 1024
@@ -158,5 +158,5 @@ class Article(BaseResource):
             return {k: new_record[k] for k in changed}
         elif body_behavior == 'diff':
             return {k: new_record[k] for k in changed
-                    if changes.get(k) != new_record.get(k)}
+                    if native_value(changes.get(k)) != new_record.get(k)}
 
