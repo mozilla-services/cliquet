@@ -42,8 +42,7 @@ class ArticleSchema(ResourceSchema):
     added_on = TimeStamp()
     stored_on = TimeStamp()
 
-    status = SchemaNode(colander.Integer(), missing=0,
-                        validator=colander.Range(min=0, max=1))
+    archived = SchemaNode(colander.Boolean(), missing=False)
     favorite = SchemaNode(colander.Boolean(), missing=False)
     unread = SchemaNode(colander.Boolean(), missing=True)
     is_article = SchemaNode(colander.Boolean(), missing=True)
@@ -67,7 +66,6 @@ class ArticleSchema(ResourceSchema):
 @crud()
 class Article(BaseResource):
     mapping = ArticleSchema()
-    deleted_mark = ('status', 2)
 
     def put(self):
         response = errors.http_error(

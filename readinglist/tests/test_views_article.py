@@ -228,18 +228,18 @@ class DeletedArticleTest(BaseWebTest, unittest.TestCase):
         self.deleted = self.app.delete(self.url, headers=self.headers)
 
     def test_delete_article_returns_status_deleted(self):
-        self.assertEqual(self.deleted.json['status'], 2)
+        self.assertEqual(self.deleted.json['deleted'], True)
 
     def test_deleted_articles_are_marked_with_status_deleted(self):
         resp = self.app.get('/articles?_since=%s' % self.last_modified,
                             headers=self.headers)
-        self.assertEqual(resp.json['items'][0]['status'], 2)
+        self.assertEqual(resp.json['items'][0]['deleted'], True)
 
     def test_deleted_articles_are_stripped(self):
         resp = self.app.get('/articles?_since=%s' % self.last_modified,
                             headers=self.headers)
         self.assertEqual(sorted(resp.json['items'][0].keys()),
-                         ['id', 'last_modified', 'status'])
+                         ['deleted', 'id', 'last_modified'])
 
     def test_url_unicity_does_not_interfere_with_deleted_records(self):
         self.app.post_json('/articles',
@@ -250,32 +250,31 @@ class DeletedArticleTest(BaseWebTest, unittest.TestCase):
         self.app.post_json('/articles',
                            MINIMALIST_ARTICLE,
                            headers=self.headers)
-        only_deleted = '/articles?_since=%s&status=2' % self.last_modified
+        only_deleted = '/articles?_since=%s&deleted=true' % self.last_modified
         resp = self.app.get(only_deleted,
                             headers=self.headers)
         self.assertEqual(len(resp.json['items']), 1)
 
-    def test_deleted_articles_can_be_sorted_on_status(self):
-        # Create with default status (status=0)
+    def test_deleted_articles_can_be_sorted_on_deleted_status(self):
+        # Create with default status
         self.app.post_json('/articles',
                            MINIMALIST_ARTICLE,
                            headers=self.headers)
 
-        # Create another and archive (status=1)
+        # Create another and archive
         body = MINIMALIST_ARTICLE.copy()
         body['url'] = 'http://host.com'
         resp = self.app.post_json('/articles',
                                   body,
                                   headers=self.headers)
         self.app.patch_json('/articles/%s' % resp.json['id'],
-                            {'status': 1},
+                            {'archived': True},
                             headers=self.headers)
 
         # Obtain the 3 records
-        sort_status = '/articles?_since=%s&_sort=status' % self.last_modified
-        resp = self.app.get(sort_status,
+        sort_deleted = '/articles?_since=%s&_sort=deleted' % self.last_modified
+        resp = self.app.get(sort_deleted,
                             headers=self.headers)
         records = resp.json['items']
-        self.assertEqual(records[0]['status'], 0)
-        self.assertEqual(records[1]['status'], 1)
-        self.assertEqual(records[2]['status'], 2)
+        self.assertEqual(records[0]['deleted'], True)
+        self.assertEqual(records[1]['deleted'], False)
