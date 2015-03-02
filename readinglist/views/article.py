@@ -159,4 +159,3 @@ class Article(BaseResource):
         elif body_behavior == 'diff':
             return {k: new_record[k] for k in changed
                     if native_value(changes.get(k)) != new_record.get(k)}
-
