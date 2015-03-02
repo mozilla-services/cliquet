@@ -4,11 +4,10 @@ Changelog
 This document describes changes between each past release.
 
 
-1.1 (unreleased)
-----------------
+1.1.1 (2015-03-03)
+------------------
 
-- Nothing changed yet.
-
+- Fix packaging (include .sql files) (#58)
 
 1.0 (2015-03-02)
 ----------------
