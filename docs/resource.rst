@@ -308,7 +308,7 @@ Response behavior
 
 When doing a PATCH you can choose which kind of response you want to get.
 
-You have got 3 behaviors:
+Three behaviors are available:
 
 - ``full``: The default behavior, give you back the full new record.
 - ``light``: Give you back the new fields values modified by your request
