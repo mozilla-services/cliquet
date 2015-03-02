@@ -70,15 +70,12 @@ class Article(BaseResource):
     deleted_mark = ('status', 2)
 
     def put(self):
-        response = httpexceptions.HTTPMethodNotAllowed(
-            body=errors.format_error(
-                code=httpexceptions.HTTPMethodNotAllowed.code,
-                errno=errors.ERRORS.METHOD_NOT_ALLOWED,
-                error=httpexceptions.HTTPMethodNotAllowed.title),
-            content_type='application/json')
+        response = errors.http_error(
+            httpexceptions.HTTPMethodNotAllowed(),
+            errno=errors.ERRORS.METHOD_NOT_ALLOWED)
         raise response
 
-    def preprocess_record(self, new, old=None):
+    def process_record(self, new, old=None):
         """Operate changes on submitted record.
         This implementation represents the specifities of the *Reading List*
         article resource.
@@ -105,7 +102,8 @@ class Article(BaseResource):
             if old['unread'] and not new['unread']:
                 if not any((new['marked_read_on'], new['marked_read_by'])):
                     error = 'Missing marked_read_by or marked_read_on fields'
-                    self.raise_invalid(name='unread', description=error)
+                    errors.raise_invalid(self.request, name='unread',
+                                         description=error)
 
             # Device info is ignored if already read
             if not old['unread']:
