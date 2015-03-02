@@ -306,7 +306,7 @@ of the API, the following fields are also modifiable:
 Response behavior
 -----------------
 
-When doing a PATCH you can choose which kind of response you want to get.
+On a PATCH it is possible to customize which kind of response is wanted.
 
 Three behaviors are available:
 
