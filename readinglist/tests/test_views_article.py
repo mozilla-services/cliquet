@@ -253,7 +253,9 @@ class DeletedArticleTest(BaseWebTest, unittest.TestCase):
         only_deleted = '/articles?_since=%s&deleted=true' % self.last_modified
         resp = self.app.get(only_deleted,
                             headers=self.headers)
-        self.assertEqual(len(resp.json['items']), 1)
+        results = resp.json['items']
+        self.assertEqual(len(results), 1)
+        self.assertTrue(results[0]['deleted'])
 
     def test_deleted_articles_can_be_sorted_on_deleted_status(self):
         # Create with default status

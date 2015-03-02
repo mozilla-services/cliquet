@@ -139,3 +139,8 @@ class ArticleSchemaTest(unittest.TestCase):
         self.record['status'] = 2
         deserialized = self.schema.deserialize(self.record)
         self.assertNotIn('status', deserialized)
+
+    def test_deleted_is_ignored(self):
+        self.record['deleted'] = 'true'
+        deserialized = self.schema.deserialize(self.record)
+        self.assertNotIn('deleted', deserialized)
