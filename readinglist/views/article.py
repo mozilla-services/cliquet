@@ -5,7 +5,7 @@ from pyramid import httpexceptions
 
 from cliquet import errors
 from cliquet.resource import crud, BaseResource, ResourceSchema
-from cliquet.utils import strip_whitespace
+from cliquet.utils import strip_whitespace, native_value
 from cliquet.schema import URL, TimeStamp
 
 TITLE_MAX_LENGTH = 1024
@@ -129,3 +129,20 @@ class Article(BaseResource):
         except httpexceptions.HTTPConflict as e:
             self.request.response.status_code = 200
             return e.existing
+
+    def update_record(self, old, new, changes=None):
+        """Update existing record."""
+        new_record = super(Article, self).update_record(old, new, changes)
+        body_behavior = self.request.headers.get(
+            'Response-Behavior', 'full').lower()
+
+        changed = [k for k in changes.keys()
+                   if old.get(k) != new.get(k)]
+
+        if body_behavior == 'full':
+            return new_record
+        elif body_behavior == 'light':
+            return {k: new_record[k] for k in changed}
+        elif body_behavior == 'diff':
+            return {k: new_record[k] for k in changed
+                    if native_value(changes.get(k)) != new_record.get(k)}
