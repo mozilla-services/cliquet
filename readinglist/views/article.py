@@ -130,27 +130,14 @@ class Article(BaseResource):
             self.request.response.status_code = 200
             return e.existing
 
-    @resource.view(permission='readwrite')
-    def patch(self, *args, **kwargs):
-        """Record `PATCH` endpoint."""
-        record = self.get_record(self.record_id)
-        self._raise_412_if_modified(record)
-
-        changes = self.request.json
-
-        updated = self.apply_changes(record, changes=changes)
-        updated = self.process_record(updated, old=record)
-
+    def update_record(self, old, new, changes=None):
+        """Update existing record."""
+        new_record = super(Article, self).update_record(old, new, changes)
         body_behavior = self.request.headers.get(
             'Response-Behavior', 'full').lower()
 
         changed = [k for k in changes.keys()
-                   if record.get(k) != updated.get(k)]
-
-        if len(changed) > 0:
-            new_record = self.update_record(updated, old=record)
-        else:
-            new_record = record
+                   if old.get(k) != new.get(k)]
 
         if body_behavior == 'full':
             return new_record
@@ -159,3 +146,4 @@ class Article(BaseResource):
         elif body_behavior == 'diff':
             return {k: new_record[k] for k in changed
                     if native_value(changes.get(k)) != new_record.get(k)}
+
