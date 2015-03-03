@@ -306,17 +306,19 @@ of the API, the following fields are also modifiable:
 Response behavior
 -----------------
 
-On a PATCH it is possible to customize which kind of response is wanted.
+On a PATCH it is possible to choose among different behaviors for the response content.
 
 Three behaviors are available:
 
-- ``full``: The default behavior, give you back the full new record.
-- ``light``: Give you back the new fields values modified by your request
-- ``diff``: Give you back the new fields values that don't match your request fields values.
+- ``full``: Returns the whole record (**default**).
+- ``light``: Returns only the fields whose value was changed.
+- ``diff``: Returns only the fields values that don't match those provided.
 
 As an example:
 
-Starting with::
+For example, using the default behavior :
+
+::
 
     http POST http://localhost:8000/v0/articles \
         added_by=Natim title=Trunat url=http://www.trunat.fr \
@@ -324,13 +326,8 @@ Starting with::
 
 .. code-block:: http
     POST /v0/articles HTTP/1.1
-    Accept: application/json
-    Accept-Encoding: gzip, deflate
-    Authorization: Basic TmF0aW06
-    Content-Length: 71
-    Content-Type: application/json; charset=utf-8
+    ...
     Host: localhost:8000
-    User-Agent: HTTPie/0.8.0
 
     {
         "added_by": "Natim", 
@@ -339,11 +336,8 @@ Starting with::
     }
 
     HTTP/1.1 201 Created
-    Access-Control-Expose-Headers: Backoff, Retry-After, Alert
-    Content-Length: 439
+    ...
     Content-Type: application/json; charset=UTF-8
-    Date: Mon, 02 Mar 2015 16:56:46 GMT
-    Server: waitress
 
     {
         "added_by": "Natim", 
@@ -366,8 +360,8 @@ Starting with::
         "word_count": null
     }
 
-Calling with ``Response-Behavior: light``
-:::::::::::::::::::::::::::::::::::::::::
+Using ``Response-Behavior: light``
+::::::::::::::::::::::::::::::::::
 
     http PATCH http://localhost:8000/v0/articles/8412b7d7da40467e9afbad8b6f15c20f \
         unread=False marked_read_on=1425316211577 marked_read_by=Ipad \
@@ -377,14 +371,9 @@ Calling with ``Response-Behavior: light``
 .. code-block:: http
 
     PATCH /v0/articles/8412b7d7da40467e9afbad8b6f15c20f HTTP/1.1
-    Accept: application/json
-    Accept-Encoding: gzip, deflate
-    Authorization: Basic TmF0aW06
-    Content-Length: 80
-    Content-Type: application/json; charset=utf-8
     Host: localhost:8000
+	...
     Response-Behavior: light
-    User-Agent: HTTPie/0.8.0
 
     {
         "marked_read_by": "Ipad", 
@@ -393,11 +382,8 @@ Calling with ``Response-Behavior: light``
     }
 
     HTTP/1.1 200 OK
-    Access-Control-Expose-Headers: Backoff, Retry-After, Last-Modified, Alert
-    Content-Length: 76
+    ...
     Content-Type: application/json; charset=UTF-8
-    Date: Mon, 02 Mar 2015 17:16:11 GMT
-    Server: waitress
 
     {
         "marked_read_by": "Ipad", 
@@ -405,8 +391,10 @@ Calling with ``Response-Behavior: light``
         "unread": false
     }
 
-Calling with ``Response-Behavior: diff``
-::::::::::::::::::::::::::::::::::::::::
+Using ``Response-Behavior: diff``
+:::::::::::::::::::::::::::::::::
+
+::
 
     http PATCH http://localhost:8000/v0/articles/8412b7d7da40467e9afbad8b6f15c20f \
         unread=False marked_read_on=1425316211577 marked_read_by=Ipad \
@@ -416,14 +404,9 @@ Calling with ``Response-Behavior: diff``
 .. code-block:: http
 
     PATCH /v0/articles/8412b7d7da40467e9afbad8b6f15c20f HTTP/1.1
-    Accept: application/json
-    Accept-Encoding: gzip, deflate
-    Authorization: Basic TmF0aW06
-    Content-Length: 80
-    Content-Type: application/json; charset=utf-8
+    ...
     Host: localhost:8000
     Response-Behavior: light
-    User-Agent: HTTPie/0.8.0
 
     {
         "marked_read_by": "Ipad", 
@@ -432,11 +415,8 @@ Calling with ``Response-Behavior: diff``
     }
 
     HTTP/1.1 200 OK
-    Access-Control-Expose-Headers: Backoff, Retry-After, Last-Modified, Alert
-    Content-Length: 2
+    ...
     Content-Type: application/json; charset=UTF-8
-    Date: Mon, 02 Mar 2015 17:16:11 GMT
-    Server: waitress
 
     {}
 
