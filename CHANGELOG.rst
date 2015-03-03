@@ -10,16 +10,18 @@ This document describes changes between each past release.
 **Breaking changes**
 
 - Most configuration entries were renamed, see `config/readinglist.ini`
-  example to port your configuration.
-- status field was removed, archived and deleted fields were added
+  example to port your configuration
+- Status field was removed, archived and deleted fields were added
+  (requires a database flush.)
 - Remove Python 2.6 support
 
 **New features**
 
 - Add the /fxa-oauth/params endpoint
 - Add the DELETE /articles endpoint
+  (Needs cliquet.delete_collection_enabled configuration)
 - Add the Response-Behavior header on PATCH /articles
-- Add HTTP calls example in the documentation
+- Add HTTP requests / responses examples in the documentation
 - Use Postgresql as the default database backend
 
 **Internal changes**
@@ -27,7 +29,7 @@ This document describes changes between each past release.
 - Main code base was split into a separate project
   `Cliquet <https://github.com/mozilla-services/cliquet>`_
 - Perform continuated pagination in loadtests
-- Use PostgreSQL for loadtests.
+- Use PostgreSQL for loadtests
 
 
 0.2.2 (2015-02-13)
@@ -44,7 +46,7 @@ This document describes changes between each past release.
 **Breaking changes**
 
 - Internal user ids for FxA are now prefixed, all existing records
-  will be lost. (refs #109)
+  will be lost (refs #109)
 
 **Bug fixes**
 
@@ -76,7 +78,7 @@ This document describes changes between each past release.
 - ``marked_read_by`` was ignored on PATCH (ref PR #72)
 - Timestamp was not incremented on DELETE (ref PR #95)
 - Fix number of bugs regarding support of CORS in error views (ref PR #105)
-- Previous Basic Auth could impersonate FxA user. (ref PR #78)
+- Previous Basic Auth could impersonate FxA user (ref PR #78)
 
 
 0.1 (2015-01-30)
