@@ -18,7 +18,7 @@ Contents:
 
    model
    authentication
-   api
+   resource
    batch
    utilities
    timestamps

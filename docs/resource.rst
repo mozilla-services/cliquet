@@ -306,7 +306,7 @@ of the API, the following fields are also modifiable:
 Response behavior
 -----------------
 
-On a PATCH it is possible to choose among different behaviors for the response content.
+On a ``PATCH`` it is possible to choose among different behaviors for the response content.
 
 Three behaviors are available:
 
@@ -314,66 +314,20 @@ Three behaviors are available:
 - ``light``: Returns only the fields whose value was changed.
 - ``diff``: Returns only the fields values that don't match those provided.
 
-As an example:
-
 For example, using the default behavior :
 
 ::
 
-    http POST http://localhost:8000/v0/articles \
-        added_by=Natim title=Trunat url=http://www.trunat.fr \
-        --auth 'Natim:' -v
-
-.. code-block:: http
-    POST /v0/articles HTTP/1.1
-    ...
-    Host: localhost:8000
-
-    {
-        "added_by": "Natim", 
-        "title": "Trunat", 
-        "url": "http://www.trunat.fr"
-    }
-
-    HTTP/1.1 201 Created
-    ...
-    Content-Type: application/json; charset=UTF-8
-
-    {
-        "added_by": "Natim", 
-        "added_on": 1425315406801, 
-        "excerpt": "", 
-        "favorite": false, 
-        "id": "8412b7d7da40467e9afbad8b6f15c20f", 
-        "is_article": true, 
-        "last_modified": 1425315406802, 
-        "marked_read_by": null, 
-        "marked_read_on": null, 
-        "read_position": 0, 
-        "resolved_title": "Trunat", 
-        "resolved_url": "http://www.trunat.fr", 
-        "status": 0, 
-        "stored_on": 1425315406801, 
-        "title": "Trunat", 
-        "unread": true, 
-        "url": "http://www.trunat.fr", 
-        "word_count": null
-    }
-
-Using ``Response-Behavior: light``
-::::::::::::::::::::::::::::::::::
-
     http PATCH http://localhost:8000/v0/articles/8412b7d7da40467e9afbad8b6f15c20f \
         unread=False marked_read_on=1425316211577 marked_read_by=Ipad \
-        Response-Behavior:light \
         --auth 'Natim:' -v
 
 .. code-block:: http
+    :emphasize-lines: 15-35
 
     PATCH /v0/articles/8412b7d7da40467e9afbad8b6f15c20f HTTP/1.1
     Host: localhost:8000
-	...
-    Response-Behavior: light
+    [...]
 
     {
         "marked_read_by": "Ipad", 
@@ -382,7 +336,57 @@ Using ``Response-Behavior: light``
     }
 
     HTTP/1.1 200 OK
-    ...
+    Content-Type: application/json; charset=UTF-8
+    [...]
+
+    {
+        "added_by": "Natim", 
+        "added_on": 1425383479321, 
+        "archived": false, 
+        "excerpt": "", 
+        "favorite": false, 
+        "id": "8412b7d7da40467e9afbad8b6f15c20f", 
+        "is_article": true, 
+        "last_modified": 1425383532546, 
+        "marked_read_by": "Ipad", 
+        "marked_read_on": 1425316211577, 
+        "read_position": 0, 
+        "resolved_title": "What’s Hawk authentication and how to use it?", 
+        "resolved_url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/", 
+        "stored_on": 1425383479321, 
+        "title": "The Hawk Authorization protocol", 
+        "unread": false, 
+        "url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/", 
+        "word_count": null
+    }
+
+
+Using ``Response-Behavior: light``
+::::::::::::::::::::::::::::::::::
+
+::
+
+    http PATCH http://localhost:8000/v0/articles/8412b7d7da40467e9afbad8b6f15c20f \
+        unread=False marked_read_on=1425316211577 marked_read_by=Ipad \
+        Response-Behavior:light \
+        --auth 'Natim:' -v
+
+.. code-block:: http
+    :emphasize-lines: 3,16-20
+
+    PATCH /v0/articles/8412b7d7da40467e9afbad8b6f15c20f HTTP/1.1
+    Host: localhost:8000
+    Response-Behavior: light
+    [...]
+
+    {
+        "marked_read_by": "Ipad", 
+        "marked_read_on": "1425316211577", 
+        "unread": "False"
+    }
+
+    HTTP/1.1 200 OK
+    [...]
     Content-Type: application/json; charset=UTF-8
 
     {
@@ -402,11 +406,12 @@ Using ``Response-Behavior: diff``
         --auth 'Natim:' -v
 
 .. code-block:: http
+    :emphasize-lines: 3,16
 
     PATCH /v0/articles/8412b7d7da40467e9afbad8b6f15c20f HTTP/1.1
-    ...
     Host: localhost:8000
-    Response-Behavior: light
+    Response-Behavior: diff
+    [...]
 
     {
         "marked_read_by": "Ipad", 
@@ -415,8 +420,8 @@ Using ``Response-Behavior: diff``
     }
 
     HTTP/1.1 200 OK
-    ...
     Content-Type: application/json; charset=UTF-8
+    [...]
 
     {}
 
