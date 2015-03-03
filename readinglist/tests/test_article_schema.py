@@ -18,8 +18,8 @@ class ArticleSchemaTest(unittest.TestCase):
         self.assertEqual(self.deserialized['title'], self.record['title'])
 
     def test_record_validation_default_values(self):
-        self.assertEqual(self.deserialized['status'], 0)
         self.assertEqual(self.deserialized['excerpt'], '')
+        self.assertEqual(self.deserialized['archived'], False)
         self.assertEqual(self.deserialized['favorite'], False)
         self.assertEqual(self.deserialized['unread'], True)
         self.assertEqual(self.deserialized['is_article'], True)
@@ -130,14 +130,17 @@ class ArticleSchemaTest(unittest.TestCase):
                           self.schema.deserialize,
                           self.record)
 
-    def test_status_cannot_be_negative(self):
-        self.record['status'] = -1
-        self.assertRaises(colander.Invalid,
-                          self.schema.deserialize,
-                          self.record)
+    def test_archived_is_coerced_into_boolean(self):
+        self.record['archived'] = 'false'
+        deserialized = self.schema.deserialize(self.record)
+        self.assertFalse(deserialized['archived'])
 
-    def test_status_cannot_be_set_to_deleted(self):
+    def test_status_is_ignored(self):
         self.record['status'] = 2
-        self.assertRaises(colander.Invalid,
-                          self.schema.deserialize,
-                          self.record)
+        deserialized = self.schema.deserialize(self.record)
+        self.assertNotIn('status', deserialized)
+
+    def test_deleted_is_ignored(self):
+        self.record['deleted'] = 'true'
+        deserialized = self.schema.deserialize(self.record)
+        self.assertNotIn('deleted', deserialized)

@@ -31,9 +31,9 @@ Filtering
 
 * ``/articles?unread=true``
 
-**Multiple values**
+.. **Multiple values**
 
-* ``/articles?status=1,2``
+.. * ``/articles?status=1,2``
 
 **Minimum and maximum**
 
@@ -52,7 +52,7 @@ Prefix attribute name with ``min_`` or ``max_``:
 
 Prefix attribute name with ``not_``:
 
-* ``/articles?not_status=0``
+* ``/articles?not_read_position=0``
 
 :note:
     Will return an error if a field is unknown.
@@ -99,7 +99,8 @@ The new value of the collection latest modification is provided in
 headers (*see Server timestamps section*).
 
 When filtering on ``last_modified`` (i.e. with ``_since`` or ``_to`` parameters),
-every deleted articles will appear in the list with a deleted status (``status=2``).
+every deleted articles will appear in the list with a deleted status
+(``deleted=true``).
 
 If the request header ``If-Modified-Since`` is provided, and if the
 collection has not suffered changes meanwhile, a ``304 Not Modified``
@@ -166,7 +167,7 @@ changed meanwhile, a ``412 Precondition failed`` error is returned.
 - ``excerpt``
 - ``favorite``
 - ``unread``
-- ``status``
+- ``archived``
 - ``is_article``
 - ``resolved_url``
 - ``resolved_title``
@@ -179,7 +180,7 @@ For v1, the server will assign default values to the following attributes:
 - ``resolved_url``: ``url``
 - ``resolved_title``: ``title``
 - ``excerpt``: empty text
-- ``status``: 0-OK
+- ``archived``: false
 - ``favorite``: false
 - ``unread``: true
 - ``read_position``: 0
@@ -203,11 +204,6 @@ Validation
 
 If the posted values are invalid (e.g. *field value is not an integer*)
 an error response is returned with status ``400``.
-
-
-:note:
-    The ``status`` can take only ``0`` (OK) and ``1`` (archived), even though
-    the server sets it to ``2`` when including deleted articles in the collection.
 
 
 Conflicts
@@ -277,7 +273,7 @@ changed meanwhile, a ``412 Precondition failed`` error is returned.
 
 :note:
     Once deleted, an article will appear in the collection with a deleted status
-    (``status=2``) and will have most of its fields empty.
+    (``deleted=true``) and will have most of its fields empty.
 
 
 PATCH /articles/<id>
@@ -296,7 +292,7 @@ The PATCH response is the modified record (full).
 - ``excerpt``
 - ``favorite``
 - ``unread``
-- ``status``
+- ``archived``
 - ``read_position``
 
 Since article fields resolution is performed by the client in the first version
@@ -337,9 +333,6 @@ changed meanwhile, a ``412 Precondition failed`` error is returned.
 :note:
     If ``unread`` is changed to true, ``marked_read_by``, ``marked_read_on``
     and ``read_position`` are reset to their default value.
-
-:note:
-    As mentionned in the *Validation section*, an article status cannot take the value ``2``.
 
 
 Conflicts

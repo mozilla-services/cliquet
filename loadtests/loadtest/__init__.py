@@ -113,11 +113,11 @@ class TestBasic(TestCase):
 
     def filter_sort(self):
         queries = [
-            [('status', '0')],
-            [('unread', 'true'), ('status', '0')],
-            [('_sort', '-last_modified'), ('status', '1')],
+            [('archived', 'false')],
+            [('unread', 'true'), ('archived', 'false')],
+            [('_sort', '-last_modified'), ('archived', 'true')],
             [('_sort', 'title')],
-            [('_sort', '-added_by,-stored_on'), ('status', '0')],
+            [('_sort', '-added_by,-stored_on'), ('archived', 'false')],
         ]
         queryparams = random.choice(queries)
         query_url = '&'.join(['='.join(param) for param in queryparams])
@@ -135,7 +135,7 @@ class TestBasic(TestCase):
     def update(self):
         data = {
             "title": "Some title {}".format(random.randint(0, 1)),
-            "status": random.randint(0, 1),
+            "archived": bool(random.randint(0, 1)),
             "is_article": bool(random.randint(0, 1)),
             "favorite": bool(random.randint(0, 1)),
         }
@@ -165,7 +165,7 @@ class TestBasic(TestCase):
 
     def archive(self):
         data = {
-            "status": 1
+            "archived": "true"
         }
         self._patch(self.random_url, data)
 
@@ -176,17 +176,17 @@ class TestBasic(TestCase):
 
     def poll_changes(self):
         last_modified = self.random_record['last_modified']
-        archived_url = self.api_url('articles?_since=%s' % last_modified)
-        resp = self.session.get(archived_url, auth=self.basic_auth)
+        modified_url = self.api_url('articles?_since=%s' % last_modified)
+        resp = self.session.get(modified_url, auth=self.basic_auth)
         self.assertEqual(resp.status_code, 200)
 
     def list_archived(self):
-        archived_url = self.api_url('articles?status=1')
+        archived_url = self.api_url('articles?archived=true')
         resp = self.session.get(archived_url, auth=self.basic_auth)
         self.assertEqual(resp.status_code, 200)
 
     def list_deleted(self):
-        last_modif = self.random_record['last_modified']
-        deleted_url = self.api_url('articles?_since=%s&status=2' % last_modif)
+        modif = self.random_record['last_modified']
+        deleted_url = self.api_url('articles?_since=%s&deleted=true' % modif)
         resp = self.session.get(deleted_url, auth=self.basic_auth)
         self.assertEqual(resp.status_code, 200)
