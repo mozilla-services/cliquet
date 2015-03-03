@@ -15,14 +15,13 @@ REQUIREMENTS = [
     'cornice',
     'six',
     'waitress',
-    'cliquet'
+    'cliquet[postgresql]'
 ]
 
 ENTRY_POINTS = {
     'paste.app_factory': [
         'main = readinglist:main',
     ]}
-
 
 setup(name='readinglist',
       version='0.3.dev0',
