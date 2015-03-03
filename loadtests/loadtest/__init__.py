@@ -175,7 +175,6 @@ class TestBasic(TestCase):
         self.incr_counter(resp.status_code)
         self.assertEqual(resp.status_code, 200)
 
-<<<<<<< HEAD
     def poll_changes(self):
         last_modified = self.random_record['last_modified']
         modified_url = self.api_url('articles?_since=%s' % last_modified)
@@ -192,7 +191,7 @@ class TestBasic(TestCase):
         deleted_url = self.api_url('articles?_since=%s&deleted=true' % modif)
         resp = self.session.get(deleted_url, auth=self.basic_auth)
         self.assertEqual(resp.status_code, 200)
-=======
+
     def list_continuated_pagination(self):
         paginated_url = self.api_url('articles?_limit=20')
 
@@ -202,4 +201,3 @@ class TestBasic(TestCase):
             next_page = resp.headers.get("Next-Page")
             self.assertNotEqual(paginated_url, next_page)
             paginated_url = next_page
->>>>>>> Perform continuated pagination in loads tests (ref #25)
