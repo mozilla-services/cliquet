@@ -189,7 +189,7 @@ Example
                 "read_position": 0,
                 "resolved_title": "The Hawk Authorization protocol",
                 "resolved_url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/",
-                "status": 0,
+                "archived": false,
                 "stored_on": 1425053903123,
                 "title": "The Hawk Authorization protocol",
                 "unread": true,
@@ -318,6 +318,7 @@ Example
     {
         "added_by": "Natim",
         "added_on": 1425053903123,
+        "archived": false,
         "excerpt": "",
         "favorite": false,
         "id": "ff795c43c02145a4b7a5df5260ee182d",
@@ -328,7 +329,6 @@ Example
         "read_position": 0,
         "resolved_title": "The Hawk Authorization protocol",
         "resolved_url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/",
-        "status": 0,
         "stored_on": 1425053903123,
         "title": "The Hawk Authorization protocol",
         "unread": true,
@@ -381,9 +381,9 @@ Example
     {
         "items": [
             {
+                "deleted": true,
                 "id": "30afb809ca7745a58496a09c6a4afcac",
-                "last_modified": 1425054475110,
-                "status": 2
+                "last_modified": 1425054475110
             }
         ]
     }
@@ -431,6 +431,7 @@ Example
     {
         "added_by": "Natim",
         "added_on": 1425054146680,
+        "archived": false,
         "excerpt": "",
         "favorite": false,
         "id": "30afb809ca7745a58496a09c6a4afcac",
@@ -441,7 +442,6 @@ Example
         "read_position": 0,
         "resolved_title": "The Hawk Authorization protocol",
         "resolved_url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/",
-        "status": 0,
         "stored_on": 1425054146680,
         "title": "The Hawk Authorization protocol",
         "unread": true,
@@ -496,9 +496,9 @@ Example
     Server: waitress
 
     {
+        "deleted": True,
         "id": "ff795c43c02145a4b7a5df5260ee182d",
-        "last_modified": 1425054060041,
-        "status": 2
+        "last_modified": 1425054060041
     }
 
 
@@ -608,6 +608,7 @@ Example
     {
         "added_by": "Natim",
         "added_on": 1425054146680,
+        "archived": false,
         "excerpt": "",
         "favorite": false,
         "id": "30afb809ca7745a58496a09c6a4afcac",
@@ -618,7 +619,6 @@ Example
         "read_position": 0,
         "resolved_title": "The Hawk Authorization protocol",
         "resolved_url": "https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/",
-        "status": 0,
         "stored_on": 1425054146680,
         "title": "What’s Hawk authentication and how to use it?",
         "unread": true,
