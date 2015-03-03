@@ -4,18 +4,30 @@ Changelog
 This document describes changes between each past release.
 
 
-0.3 (unreleased)
+1.0 (unreleased)
 ----------------
 
 **Breaking changes**
 
 - Most configuration entries were renamed, see `config/readinglist.ini`
   example to port your configuration.
+- status field was removed, archived and deleted fields were added
+- Remove Python 2.6 support
+
+**New features**
+
+- Add the /fxa-oauth/params endpoint
+- Add the DELETE /articles endpoint
+- Add the Response-Behavior header on PATCH /articles
+- Add HTTP calls example in the documentation
+- Use Postgresql as the default database backend
 
 **Internal changes**
 
 - Main code base was split into a separate project
   `Cliquet <https://github.com/mozilla-services/cliquet>`_
+- Perform continuated pagination in loadtests
+- Use PostgreSQL for loadtests.
 
 
 0.2.2 (2015-02-13)
