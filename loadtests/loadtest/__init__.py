@@ -40,7 +40,7 @@ class TestBasic(TestCase):
         self.nb_initial_records = random.randint(3, 100)
 
     def api_url(self, path):
-        return "{0}/v0/{1}".format(self.server_url, path)
+        return "{0}/v1/{1}".format(self.server_url, path)
 
     def setUp(self):
         """Choose some random records in the whole collection.

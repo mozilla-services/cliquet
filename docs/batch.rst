@@ -26,7 +26,7 @@ The POST body is a mapping, with the following attributes:
     {
       "defaults": {
         "method" : "POST",
-        "path" : "/v0/articles",
+        "path" : "/articles",
         "headers" : {
           ...
         }

@@ -9,7 +9,7 @@ Versionning
 
 The API versioning is based on the application version deployed. It follows `semver <http://semver.org/>`_.
 
-During development the server will be 0.X.X, the server endpoint will be prefixed by ``/v0``.
+During development the server will be 0.X.X, the server endpoint will be prefixed by ``/v1``.
 
 Each non retro-compatible API change will imply the major version number to be incremented.
 Everything will be made to avoid retro incompatible changes.
@@ -22,7 +22,7 @@ Deprecation
 
 A track of the client version will be kept to know after which date each old version can be shutdown.
 
-The date of the end of support is provided in the API root URL (e.g. ``/v0``)
+The date of the end of support is provided in the API root URL (e.g. ``/v1``)
 
 Using the ``Alert`` response header, the server can communicate any potential warning
 messages, information, or other alerts.

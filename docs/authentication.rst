@@ -36,9 +36,9 @@ Bearer Token. `See Firefox Account documentation about this behavior
 
 .. code-block:: http
 
-    $ http GET http://localhost:8000/v0/fxa-oauth/params -v
+    $ http GET http://localhost:8000/v1/fxa-oauth/params -v
 
-    GET /v0/fxa-oauth/params HTTP/1.1
+    GET /v1/fxa-oauth/params HTTP/1.1
     Accept: */*
     Accept-Encoding: gzip, deflate
     Host: localhost:8000
