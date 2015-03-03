@@ -4,8 +4,8 @@ Resource endpoints
 
 .. _resource-endpoints:
 
-To ease testing, we are using `httpie <https://github.com/jkbr/httpie>`_ in
-order to make requests. Examples of use with httpie are provided when possible.
+In this section, the request example provided are performed using
+`httpie <https://github.com/jkbr/httpie>`_ .
 
 
 GET /articles
