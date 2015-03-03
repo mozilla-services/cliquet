@@ -19,6 +19,7 @@ ACTIONS_FREQUENCIES = [
     ('poll_changes', 90),
     ('list_archived', 20),
     ('list_deleted', 40),
+    ('list_continuated_pagination', 80),
 ]
 
 
@@ -183,3 +184,13 @@ class TestBasic(TestCase):
         deleted_url = self.api_url('articles?_since=%s&deleted=true' % modif)
         resp = self.session.get(deleted_url, auth=self.basic_auth)
         self.assertEqual(resp.status_code, 200)
+
+    def list_continuated_pagination(self):
+        paginated_url = self.api_url('articles?_limit=20')
+
+        while paginated_url:
+            resp = self.session.get(paginated_url, auth=self.basic_auth)
+            self.assertEqual(resp.status_code, 200)
+            next_page = resp.headers.get("Next-Page")
+            self.assertNotEqual(paginated_url, next_page)
+            paginated_url = next_page
