@@ -227,7 +227,7 @@ class BaseResource(object):
         pagination_rules, limit = self._extract_pagination_rules_from_token(
             sorting)
 
-        include_deleted = self.modified_field in [f[0] for f in filters]
+        include_deleted = self.modified_field in [f.field for f in filters]
 
         records, total_records = self.db.get_all(
             filters=filters,
@@ -240,7 +240,6 @@ class BaseResource(object):
         next_page = None
         if limit and len(records) == limit and total_records > limit:
             next_page = self._next_page_url(sorting, limit, records[-1])
-
         return records, total_records, next_page
 
     def delete_records(self):
@@ -540,6 +539,7 @@ class BaseResource(object):
     def _extract_sorting(self):
         """Extracts filters from QueryString parameters."""
         specified = self.request.GET.get('_sort', '').split(',')
+        limit = '_limit' in self.request.GET
         sorting = []
         modified_field_used = self.modified_field in specified
         for field in specified:
@@ -558,7 +558,7 @@ class BaseResource(object):
                 direction = -1 if order == '-' else 1
                 sorting.append(Sort(field, direction))
 
-        if not modified_field_used:
+        if not modified_field_used and limit:
             # Add a sort by the ``modified_field`` in descending order
             # useful for pagination
             sorting.append(Sort(self.modified_field, -1))
