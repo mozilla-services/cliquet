@@ -285,6 +285,7 @@ Example
 -------
 
 ::
+
     http POST http://localhost:8000/v1/articles \
         title="The Hawk Authorization protocol" \
         url=https://blog.mozilla.org/services/2015/02/05/whats-hawk-and-how-to-use-it/ \
@@ -406,6 +407,7 @@ Example
 -------
 
 ::
+
     http GET http://localhost:8000/v1/articles/30afb809ca7745a58496a09c6a4afcac \
         --auth "admin:" -v
 
