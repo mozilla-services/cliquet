@@ -37,6 +37,7 @@ class ArticleSchema(ResourceSchema):
     """Schema for a reading list article."""
 
     url = URL()
+    preview = URL(missing=None)
     title = ArticleTitle()
     added_by = DeviceName()
     added_on = TimeStamp()

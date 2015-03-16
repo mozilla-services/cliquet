@@ -24,6 +24,7 @@ class ArticleSchemaTest(unittest.TestCase):
         self.assertEqual(self.deserialized['unread'], True)
         self.assertEqual(self.deserialized['is_article'], True)
         self.assertEqual(self.deserialized['read_position'], 0)
+        self.assertIsNone(self.deserialized.get('preview'))
         self.assertIsNone(self.deserialized.get('marked_read_by'))
         self.assertIsNone(self.deserialized.get('marked_read_on'))
         self.assertIsNone(self.deserialized.get('word_count'))
@@ -144,3 +145,30 @@ class ArticleSchemaTest(unittest.TestCase):
         self.record['deleted'] = 'true'
         deserialized = self.schema.deserialize(self.record)
         self.assertNotIn('deleted', deserialized)
+
+    def test_preview_can_be_specified(self):
+        self.record['preview'] = 'http://server/image.jpg'
+        deserialized = self.schema.deserialize(self.record)
+        self.assertEqual(deserialized['preview'], 'http://server/image.jpg')
+
+    def test_preview_should_be_a_valid_url(self):
+        self.record['preview'] = '4AAQSkZJRgABAQAQ'
+        self.assertRaises(colander.Invalid,
+                          self.schema.deserialize,
+                          self.record)
+
+    def test_preview_has_max_length(self):
+        self.record['preview'] = 'http://server/image' + ('a' * 2048)
+        self.assertRaises(colander.Invalid,
+                          self.schema.deserialize,
+                          self.record)
+
+    def test_preview_can_be_under_any_protocol(self):
+        self.record['preview'] = 'http2://server/image.jpg'
+        deserialized = self.schema.deserialize(self.record)
+        self.assertEqual(deserialized['preview'], 'http2://server/image.jpg')
+
+    def test_preview_can_be_an_empty_string(self):
+        self.record['preview'] = ''
+        deserialized = self.schema.deserialize(self.record)
+        self.assertIsNone(deserialized['preview'])
