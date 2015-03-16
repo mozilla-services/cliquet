@@ -14,7 +14,7 @@ class HelloViewTest(BaseWebTest, unittest.TestCase):
         self.assertEqual(response.json['url'], 'http://localhost')
         self.assertEqual(response.json['hello'], 'readinglist')
         self.assertEqual(response.json['documentation'],
-                         'https://readinglist.rtfd.org/')
+                         'https://readinglist.readthedocs.org/')
 
     def test_do_not_returns_eos_if_empty_in_settings(self):
         response = self.app.get('/')
