@@ -155,7 +155,6 @@ class TestBasic(TestCase):
             "resolved_url": random_resolved_url
         }
         self._patch(self.random_url, data, status=409)
-        self.incr_counter("update-conflict")
 
     def archive(self):
         data = {
