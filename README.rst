@@ -113,4 +113,4 @@ You can tweak the uWsgi configuration in the ini file in
 the dedicated **[uwsgi]** section.
 
 If you are using a different ini file, you need to set
-its path in the **READINGLIST_INI** environement variable.
+its path in the **READINGLIST_INI** environment variable.
