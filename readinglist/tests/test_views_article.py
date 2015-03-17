@@ -181,8 +181,8 @@ class ReadArticleModificationTest(BaseWebTest, unittest.TestCase):
         self.assertEqual(set(resp.json.keys()), {
             'added_by', 'added_on', 'archived', 'excerpt', 'favorite', 'id',
             'is_article', 'last_modified', 'marked_read_by', 'marked_read_on',
-            'read_position', 'resolved_title', 'resolved_url', 'stored_on',
-            'title', 'unread', 'url', 'word_count'})
+            'preview', 'read_position', 'resolved_title', 'resolved_url',
+            'stored_on', 'title', 'unread', 'url', 'word_count'})
 
     def test_body_behavior_set_to_diff_return_only_diff(self):
         body = {'unread': "True", 'read_position': 10}
