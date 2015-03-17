@@ -14,8 +14,10 @@ with open(os.path.join(here, 'CONTRIBUTORS.rst')) as f:
 
 
 REQUIREMENTS = [
+    'beaker',
     'colander',
     'cornice',
+    'PyCrypto',
     'python-dateutil',
     'pyfxa',
     'pyramid_multiauth',

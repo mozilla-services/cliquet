@@ -33,7 +33,7 @@ class BaseWebTest(unittest.TestCase):
         self.config.scan("cliquet.views")
         self.config.scan("cliquet.tests.testapp.views")
 
-        attach_http_objects(self.config)
+        attach_http_objects(self.config, {})
 
         self.app = webtest.TestApp(self.config.make_wsgi_app())
 

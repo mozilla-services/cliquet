@@ -17,6 +17,9 @@ from cliquet import errors
 from cliquet.session import SessionCache
 from cliquet.utils import msec_time
 
+from beaker.cache import CacheManager
+from beaker.util import parse_cache_config_options
+
 from cornice import Service
 
 # Monkey Patch Cornice Service to setup the global CORS configuration.
@@ -79,12 +82,25 @@ def set_auth(config):
     # config.set_default_permission('readwrite')
 
 
-def attach_http_objects(config):
+def get_session(config, settings):
+    if settings.get('cliquet.session_cookies_enabled', False):
+        return CacheManager(**parse_cache_config_options({
+            'cache.type': 'cookie',
+            'cookie_expires': settings.get('cliquet.session_cookie_expire',
+                                           3600),
+            'secure': settings.get('cliquet.session_cookie_secure', True),
+            'key': settings.get('cliquet.session_cookie_secure', 'cliquet'),
+            'secret': settings.get('cliquet.session_cookie_secret')
+        }))
+
+
+def attach_http_objects(config, settings):
     """Attach HTTP requests/responses objects.
 
     This is useful to attach objects to the request object for easier
     access, and to pre-process responses.
     """
+    session_manager = get_session(config, settings)
 
     def on_new_request(event):
         # Save the time the request was received by the server.
@@ -92,6 +108,8 @@ def attach_http_objects(config):
 
         # Attach objects on requests for easier access.
         event.request.db = config.registry.storage
+        if session_manager is not None:
+            event.request.session = session_manager
 
         http_scheme = config.registry.settings.get('cliquet.http_scheme')
         if http_scheme:
@@ -174,7 +192,7 @@ def includeme(config):
     config.registry.project_docs = settings['cliquet.project_docs']
 
     set_auth(config)
-    attach_http_objects(config)
+    attach_http_objects(config, settings)
 
     # Include cornice and discover views.
     config.include("cornice")
