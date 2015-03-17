@@ -54,7 +54,7 @@ Bearer Token. `See Firefox Account documentation about this behavior
     {
         "client_id": "89513028159972bc",
         "oauth_uri": "https://oauth-stable.dev.lcip.org",
-        "scope": "profile"
+        "scope": "readinglist"
     }
 
 
@@ -65,10 +65,6 @@ Reading list scope
 The *Reading List* API will eventually have to handle a dedicated OAuth scope (e.g.
 ``readinglist``, ``readinglist:read``, ``readinglist:write``). This will help users
 to delegate access to the *Reading List* to third party apps
-
-So far the FxA server only handles the ``profile`` scope.
-
-See https://github.com/mozilla-services/readinglist/issues/16.
 
 
 Basic Auth
