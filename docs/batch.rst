@@ -11,7 +11,7 @@ POST /batch
 
 The POST body is a mapping, with the following attributes:
 
-- ``requests``: the list of requests
+- ``requests``: the list of requests (*limited to 25 by default*)
 - ``defaults``: (*optional*) default requests values in common for all requests
 
  Each request is a JSON mapping, with the following attribute:
