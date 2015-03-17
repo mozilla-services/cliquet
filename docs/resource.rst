@@ -343,7 +343,8 @@ DELETE /articles
 
 **Requires authentication**
 
-Delete multiple records. **Disabled by default**, see :ref:`configuration`.
+Delete multiple records. **Enabled by default**, see recommended production
+settings to disable.
 
 The DELETE response is a JSON mapping with an ``items`` attribute, returning
 the list of records that were deleted.
