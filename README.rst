@@ -100,3 +100,17 @@ Run tests
 ::
 
     make tests
+
+Running with uWsgi
+==================
+
+If you want to run the application using uWsgi, you can use
+the provided **app.wsgi** file and this command::
+
+    uwsgi --ini config/readinglist.ini
+
+You can tweak the uWsgi configuration in the ini file in
+the dedicated **[uwsgi]** section.
+
+If you are using a different ini file, you need to set
+its path in the **READINGLIST_INI** environment variable.
