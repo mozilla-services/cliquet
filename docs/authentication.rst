@@ -58,15 +58,6 @@ Bearer Token. `See Firefox Account documentation about this behavior
     }
 
 
-
-Reading list scope
-------------------
-
-The *Reading List* API will eventually have to handle a dedicated OAuth scope (e.g.
-``readinglist``, ``readinglist:read``, ``readinglist:write``). This will help users
-to delegate access to the *Reading List* to third party apps
-
-
 Basic Auth
 ==========
 
