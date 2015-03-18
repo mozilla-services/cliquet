@@ -32,8 +32,8 @@ For development
 By default, *Reading List* persists the records and internal cache in a PostgreSQL
 database.
 
-The default configuration will connect to the `postgres` database on
-`localhost:5432`, with user/password `postgres/postgres`. See more details
+The default configuration will connect to the ``postgres`` database on
+``localhost:5432``, with user/password ``postgres/``postgres``. See more details
 below about installation and setup of PostgreSQL.
 
 ::
@@ -86,8 +86,8 @@ On debian / ubuntu based systems:
     apt-get install postgresql postgresql-contrib
 
 
-By default, the `postgres` user has no password and can hence only connect
-if ran by the `postgres` system user. The following command will assign it:
+By default, the ``postgres`` user has no password and can hence only connect
+if ran by the ``postgres`` system user. The following command will assign it:
 
 ::
 
@@ -146,10 +146,23 @@ Running in production
 Recommended settings
 --------------------
 
+Most default setting values in the application code base are suitable for production.
+
+But the set of settings mentionned below might deserve some review or adjustments:
+
 ::
 
+    cliquet.http_scheme = https
     cliquet.batch_max_requests = 25
     cliquet.delete_collection_enabled = false
+    cliquet.basic_auth_enabled = false
+    fxa-oauth.cache_ttl_seconds = 3600
+
+:note:
+
+    For an exhaustive list of available settings and their default values,
+    refer to `cliquet source code <https://github.com/mozilla-services/cliquet/blob/93b94a4ce7f6d8788e2c00b609ec270c377851eb/cliquet/__init__.py#L34-L59>`_.
+
 
 
 PostgreSQL setup
@@ -160,13 +173,13 @@ user.
 
 ::
 
-    postgres=# CREATE USER proddb;
+    postgres=# CREATE USER produser;
     postgres=# CREATE DATABASE proddb OWNER produser;
     CREATE DATABASE
 
 
 On the first app run, the tables and objects are created. Currently, this process
-requires superuser privileges (or a `BackendError` might occur).
+requires superuser privileges (or a ``BackendError`` might occur).
 
 Grant superuser temporarily:
 
