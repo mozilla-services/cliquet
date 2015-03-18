@@ -27,6 +27,7 @@ $(DEV_STAMP): $(PYTHON) dev-requirements.txt
 virtualenv: $(PYTHON)
 $(PYTHON):
 	virtualenv $(VENV)
+	$(VENV)/bin/pip install --upgrade pip
 
 serve: install-dev
 	$(VENV)/bin/pserve $(SERVER_CONFIG) --reload
