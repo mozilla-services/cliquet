@@ -38,6 +38,9 @@ This document describes changes between each past release.
 * FxA OAuth views errors are now JSON formatted (mozilla-services/cliquet#67)
 * Prevent error when pagination token has bad format (mozilla-services/cliquet#72)
 * List of CORS exposed headers were fixed in POST on collection (mozilla-services/cliquet#54)
+* Fix environment variables not overriding configuration (mozilla-services/cliquet#100)
+* Got rid of custom *CAST* in PostgreSQL storage backend to prevent installation
+  errors without superuser (ref #174, mozilla-services/cliquet#99)
 
 
 1.0 (2015-03-03)
