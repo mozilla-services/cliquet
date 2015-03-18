@@ -201,8 +201,8 @@ Revoke superuser privilege:
 :note:
 
     Alternatively the SQL initialization files can be found in the
-    *cliquet* source code (`cliquet/session/postgresql/schemal.sql` and
-    `cliquet/storage/postgresql/schemal.sql`).
+    *cliquet* source code (``cliquet/cache/postgresql/schemal.sql`` and
+    ``cliquet/storage/postgresql/schemal.sql``).
 
 :warning:
 

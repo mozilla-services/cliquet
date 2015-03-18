@@ -8,7 +8,7 @@ web:
   links:
    - db
   ports:
-   - "8888:8888"
+   - "8000:8000"
   environment:
-    CLIQUET_SESSION_URL: postgres://postgres:postgres@db/postgres
+    CLIQUET_CACHE_URL: postgres://postgres:postgres@db/postgres
     CLIQUET_STORAGE_URL: postgres://postgres:postgres@db/postgres

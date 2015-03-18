@@ -4,10 +4,43 @@ Changelog
 This document describes changes between each past release.
 
 
-1.1 (unreleased)
-----------------
+1.1.0 (2015-03-18)
+------------------
 
-- Nothing changed yet.
+**Breaking changes**
+
+* `cliquet.storage.postgresql` now uses UUID as record primary key (mozilla-services/cliquet#70)
+* Settings ``cliquet.session_backend`` and ``cliquet.session_url`` were
+  renamed ``cliquet.cache_backend`` and ``cliquet.cache_url`` respectively.
+* FxA user ids are not hashed anymore (mozilla-services/cliquet#82)
+* Setting ``cliquet.retry_after`` was renamed ``cliquet.retry_after_seconds``
+* OAuth2 redirect url now requires to be listed in
+  ``fxa-oauth.webapp.authorized_domains`` (e.g. ``*.mozilla.com``)
+* Batch are now limited to 25 requests by default (mozilla-services/cliquet#90)
+* OAuth relier has been disabled by default (#193)
+
+**New features**
+
+* Every setting can be specified via an environment variable
+  (e.g. ``cliquet.storage_url`` with ``CLIQUET_STORAGE_URL``)
+* Logging now relies on `structlog <http://structlog.org>`_ (mozilla-services/cliquet#78)
+* Logging output can be configured to stream JSON (mozilla-services/cliquet#78)
+* New cache backend for PostgreSQL (mozilla-services/cliquet#44)
+* Documentation was improved on various aspects (mozilla-services/cliquet#64, mozilla-services/cliquet#86)
+* Handle every backend errors and return 503 errors (mozilla-services/cliquet#21)
+* State verification for OAuth2 dance now expires after 1 hour (mozilla-services/cliquet#83)
+* Add the preview field for an article (#156)
+* Setup the readinglist OAuth scope (#16)
+* Add a uwsgi file (#180)
+
+**Bug fixes**
+
+* FxA OAuth views errors are now JSON formatted (mozilla-services/cliquet#67)
+* Prevent error when pagination token has bad format (mozilla-services/cliquet#72)
+* List of CORS exposed headers were fixed in POST on collection (mozilla-services/cliquet#54)
+* Fix environment variables not overriding configuration (mozilla-services/cliquet#100)
+* Got rid of custom *CAST* in PostgreSQL storage backend to prevent installation
+  errors without superuser (ref #174, mozilla-services/cliquet#99)
 
 
 1.0 (2015-03-03)
