@@ -17,6 +17,7 @@ This document describes changes between each past release.
 * OAuth2 redirect url now requires to be listed in
   ``fxa-oauth.webapp.authorized_domains`` (e.g. ``*.mozilla.com``)
 * Batch are now limited to 25 requests by default (mozilla-services/cliquet#90)
+* OAuth relier has been disabled by default (#193)
 
 **New features**
 
