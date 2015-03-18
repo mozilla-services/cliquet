@@ -27,10 +27,12 @@ setup(name='readinglist',
       version='1.1.dev0',
       description='readinglist',
       long_description=README + "\n\n" + CHANGELOG,
+      license='Apache License (2.0)',
       classifiers=[
           "Programming Language :: Python",
           "Topic :: Internet :: WWW/HTTP",
-          "Topic :: Internet :: WWW/HTTP :: WSGI :: Application"
+          "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+          "License :: OSI Approved :: Apache Software License"
       ],
       keywords="web services",
       author='Mozilla Services',
