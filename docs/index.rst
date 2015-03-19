@@ -7,15 +7,10 @@ Table of content
 .. toctree::
    :maxdepth: 2
 
+   api/index
    model
-   authentication
-   resource
-   batch
-   utilities
-   timestamps
-   versionning
-   backoff
-   errors
+   installation
+   contributing
    changelog
 
 
