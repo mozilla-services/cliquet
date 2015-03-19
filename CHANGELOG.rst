@@ -3,6 +3,32 @@ Changelog
 
 This document describes changes between each past release.
 
+1.2.0 (2015-03-20)
+------------------
+
+**New features**
+
+- Add PostgreSQL connection pooling, with new settings
+  ``cliquet.storage_pool_maxconn`` and ``cliquet.cache_pool_maxconn``
+  (*Default: 50*) (mozilla-services/cliquet#112)
+- Add `StatsD <https://github.com/etsy/statsd/>`_ support,
+  enabled with ``cliquet.statsd_url = udp://server:port`` (mozilla-services/cliquet#114)
+- Add `Sentry <http://sentry.readthedocs.org>`_ support,
+  enabled with ``cliquet.sentry_url = http://user:pass@server/1`` (mozilla-services/cliquet#110)
+
+**Bug fixes**
+
+- Fix FxA verification cache not being used (mozilla-services/cliquet#103)
+- Fix heartbeat database check (mozilla-services/cliquet#109)
+- Fix PATCH endpoint crash if request has no body (mozilla-services/cliquet#115)
+
+**Internal changes**
+
+- Switch to `ujson <https://pypi.python.org/pypi/ujson>`_ for JSON
+  de/serialization optimizations (mozilla-services/cliquet#108)
+- Use async connections for psycopg (#201)
+- Imrpove the documentation layout (#200)
+
 
 1.1.0 (2015-03-18)
 ------------------
