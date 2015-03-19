@@ -134,6 +134,8 @@ But the set of settings mentionned below might deserve some review or adjustment
     cliquet.batch_max_requests = 25
     cliquet.delete_collection_enabled = false
     cliquet.basic_auth_enabled = false
+    cliquet.storage_pool_maxconn = 50
+    cliquet.cache_pool_maxconn = 50
     fxa-oauth.cache_ttl_seconds = 3600
 
 :note:
@@ -147,7 +149,15 @@ Monitoring
 
 .. code-block :: ini
 
+    # Heka
     cliquet.logging_renderer = cliquet.logs.MozillaHekaRenderer
+
+    # Sentry
+    cliquet.sentry_url = http://public:secret@example.com/1
+    cliquet.sentry_projects = readinglist,requests
+
+    # StatsD
+    cliquet.statsd_url = udp://carbon.server:8125
 
 Application output should go to ``stdout``, and message format should have no
 prefix string:
@@ -184,11 +194,6 @@ On the first app run, the tables and objects are created.
     Alternatively the SQL initialization files can be found in the
     *cliquet* source code (``cliquet/cache/postgresql/schemal.sql`` and
     ``cliquet/storage/postgresql/schemal.sql``).
-
-:warning:
-
-    Using a `connection pool <http://pgpool.net>`_ is highly recommended to
-    boost performances and bound memory usage (*work_mem per connection*).
 
 
 Running with uWsgi
