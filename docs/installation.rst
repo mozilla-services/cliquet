@@ -129,6 +129,7 @@ But the set of settings mentionned below might deserve some review or adjustment
 ::
 
     cliquet.http_scheme = https
+    cliquet.paginate_by = 100
     cliquet.batch_max_requests = 25
     cliquet.delete_collection_enabled = false
     cliquet.basic_auth_enabled = false
