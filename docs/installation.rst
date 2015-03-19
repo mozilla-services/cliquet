@@ -126,21 +126,34 @@ Most default setting values in the application code base are suitable for produc
 
 But the set of settings mentionned below might deserve some review or adjustments:
 
-::
+
+.. code-block :: ini
 
     cliquet.http_scheme = https
     cliquet.paginate_by = 100
     cliquet.batch_max_requests = 25
-    cliquet.logging_renderer = cliquet.logs.MozillaHekaRenderer
     cliquet.delete_collection_enabled = false
     cliquet.basic_auth_enabled = false
     fxa-oauth.cache_ttl_seconds = 3600
 
+:note:
+
+    For an exhaustive list of available settings and their default values,
+    refer to `cliquet source code <https://github.com/mozilla-services/cliquet/blob/93b94a4ce7f6d8788e2c00b609ec270c377851eb/cliquet/__init__.py#L34-L59>`_.
+
+
+Monitoring
+----------
+
+.. code-block :: ini
+
+    cliquet.logging_renderer = cliquet.logs.MozillaHekaRenderer
 
 Application output should go to ``stdout``, and message format should have no
 prefix string:
 
-::
+
+.. code-block :: ini
 
     [handler_console]
     class = StreamHandler
@@ -149,13 +162,6 @@ prefix string:
 
     [formatter_heka]
     format = %(message)s
-
-
-:note:
-
-    For an exhaustive list of available settings and their default values,
-    refer to `cliquet source code <https://github.com/mozilla-services/cliquet/blob/93b94a4ce7f6d8788e2c00b609ec270c377851eb/cliquet/__init__.py#L34-L59>`_.
-
 
 
 PostgreSQL setup
@@ -197,4 +203,4 @@ You can tweak the uWsgi configuration in the ini file in
 the dedicated **[uwsgi]** section.
 
 If you are using a different ini file, you need to set
-its path in the **READINGLIST_INI** environment variable.
+its path in the ``READINGLIST_INI`` environment variable.
