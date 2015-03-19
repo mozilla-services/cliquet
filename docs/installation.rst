@@ -16,7 +16,7 @@ By default, *Reading List* persists the records and internal cache in a PostgreS
 database.
 
 The default configuration will connect to the ``postgres`` database on
-``localhost:5432``, with user/password ``postgres/``postgres``. See more details
+``localhost:5432``, with user/password ``postgres``/``postgres``. See more details
 below about installation and setup of PostgreSQL.
 
 ::
