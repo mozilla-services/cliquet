@@ -37,7 +37,8 @@ class InitializationTest(unittest.TestCase):
         config = Configurator(settings={'cliquet.project_name': ''})
         with mock.patch('cliquet.warnings.warn') as mocked:
             cliquet.initialize_cliquet(config, '0.0.1')
-            mocked.assert_called()
+            error_msg = 'No value specified for `project_name`'
+            mocked.assert_called_with(error_msg)
 
     def test_warns_if_project_name_is_missing(self):
         config = Configurator()
