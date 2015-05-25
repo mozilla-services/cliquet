@@ -1,10 +1,13 @@
 import os
 
 import colander
+import mock
 import six
+from pyramid import testing
 
-from cliquet.utils import (native_value, strip_whitespace, random_bytes_hex,
-                           read_env)
+from cliquet.utils import (cached, native_value, strip_whitespace,
+                           random_bytes_hex, read_env)
+from cliquet.cache import memory as memory_backend
 
 from .support import unittest
 
@@ -83,3 +86,58 @@ class ReadEnvironmentTest(unittest.TestCase):
     def test_return_env_value_is_coerced_to_python(self):
         os.environ.setdefault('CLIQUET_CONF_NAME', '3.14')
         self.assertEqual(read_env('cliquet-conf.name', 12), 3.14)
+
+
+def func(a, b=2):
+    return a * b
+
+
+class CachedDecoratorTest(unittest.TestCase):
+    def setUp(self):
+        config = testing.setUp()
+        self.cache = config.registry.cache = memory_backend.Memory()
+
+    def test_cached_respects_result(self):
+        cfunc = cached()(func)
+        self.assertEqual(cfunc(1), func(1))
+        # Even when cache value is set.
+        self.assertEqual(cfunc(1), func(1))
+
+    def test_cached_reads_from_cache(self):
+        cfunc = cached()(func)
+        self.cache.set("cached_func(2,){}", 34)
+        self.assertEqual(cfunc(2), 34)
+
+    def test_calls_cache_with_empty_args_and_kwargs(self):
+        cfunc = cached()(func)
+        with mock.patch.object(self.cache, 'set') as mocked:
+            cfunc(1)
+            mocked.assert_called_with('cached_func(1,){}', 2, None)
+
+    def test_calls_cache_with_args_and_kwargs(self):
+        cfunc = cached()(func)
+        with mock.patch.object(self.cache, 'set') as mocked:
+            cfunc(4, b=3)
+            mocked.assert_called_with("cached_func(4,){'b': 3}", 12, None)
+
+    def test_calls_cache_with_ttl_if_defined(self):
+        cfunc = cached(ttl=300)(func)
+        with mock.patch.object(self.cache, 'set') as mocked:
+            cfunc(0)
+            mocked.assert_called_with("cached_func(0,){}", 0, 300)
+
+    def test_calls_cache_with_prefix_if_specified(self):
+        cfunc = cached(prefix='__')(func)
+        with mock.patch.object(self.cache, 'set') as mocked:
+            cfunc(0)
+            mocked.assert_called_with("__func(0,){}", 0, None)
+
+    def test_skips_self_if_method_is_cached(self):
+        class K(object):
+            @cached()
+            def add(self, a, b=4):
+                return a + b
+
+        with mock.patch.object(self.cache, 'set') as mocked:
+            K().add(3, 7)
+            mocked.assert_called_with("cached_add(3, 7){}", 10, None)
