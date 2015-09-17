@@ -97,7 +97,7 @@ class RouteFactory(object):
 
         if is_on_resource:
             on_collection = getattr(service, "type", None) == "collection"
-            object_uri = get_object_id(request.path)
+            object_uri = self.get_object_id(request)
 
             # Decide what the required unbound permission is depending on the
             # method that's being requested.
@@ -124,7 +124,8 @@ class RouteFactory(object):
 
             if on_collection:
                 record_uri = record_uri_from_collection(request, '*')
-                object_id_match = get_object_id(record_uri.replace('%2A', '*'))
+                record_uri = record_uri.replace('%2A', '*')
+                object_id_match = utils.strip_uri_prefix(record_uri)
 
                 get_shared_ids = functools.partial(
                     request.registry.permission.principals_accessible_objects,
@@ -153,18 +154,15 @@ class RouteFactory(object):
             principals=principals,
             get_bound_permissions=get_bound_permissions)
         # Store for later use in ``ProtectedResource``.
-        self.shared_ids = [extract_object_id(id_) for id_ in ids]
+        self.shared_ids = [self.extract_object_id(id_) for id_ in ids]
         return self.shared_ids
 
+    def get_object_id(self, request):
+        return utils.strip_uri_prefix(request.path)
 
-def get_object_id(object_uri):
-    # Remove potential version prefix in URI.
-    return re.sub(r'^(/v\d+)?', '', six.text_type(object_uri))
-
-
-def extract_object_id(object_id):
-    # XXX: Help needed: use something like route.matchdict.get('id').
-    return object_id.split('/')[-1]
+    def extract_object_id(self, object_uri):
+        # XXX: Help needed: use something like route.matchdict.get('id').
+        return object_uri.split('/')[-1]
 
 
 def record_uri_from_collection(request, record_id):
@@ -177,4 +175,4 @@ def record_uri_from_collection(request, record_id):
     matchdict = request.matchdict.copy()
     matchdict['id'] = record_id
     record_uri = request.route_path(record_service, **matchdict)
-    return get_object_id(record_uri)
+    return utils.strip_uri_prefix(record_uri)
