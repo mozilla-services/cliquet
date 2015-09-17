@@ -1179,9 +1179,7 @@ class ProtectedResource(BaseResource):
         record_id = result['data'][self.collection.id_field]
         record_uri = authorization.record_uri_from_collection(self.request,
                                                               record_id)
-
-        object_id = authorization.get_object_id(record_uri)
-        result['permissions'] = self._store_permissions(object_id=object_id)
+        result['permissions'] = self._store_permissions(object_id=record_uri)
         return result
 
     def collection_delete(self):
@@ -1194,39 +1192,35 @@ class ProtectedResource(BaseResource):
             record_id = record[self.collection.id_field]
             record_uri = authorization.record_uri_from_collection(self.request,
                                                                   record_id)
-
-            # XXX: inefficient within loop.
-            object_id = authorization.get_object_id(record_uri)
-            self._delete_permissions(object_id)
+            self._delete_permissions(record_uri)
 
         return result
 
     def get(self):
         result = super(ProtectedResource, self).get()
 
-        object_id = authorization.get_object_id(self.request.path)
-        result['permissions'] = self._build_permissions(object_id=object_id)
+        object_uri = self.context.object_uri
+        result['permissions'] = self._build_permissions(object_id=object_uri)
         return result
 
     def put(self):
         result = super(ProtectedResource, self).put()
 
-        object_id = authorization.get_object_id(self.request.path)
-        self._store_permissions(object_id=object_id, replace=True)
-        result['permissions'] = self._build_permissions(object_id=object_id)
+        object_uri = self.context.object_uri
+        self._store_permissions(object_id=object_uri, replace=True)
+        result['permissions'] = self._build_permissions(object_id=object_uri)
         return result
 
     def patch(self):
         result = super(ProtectedResource, self).patch()
 
-        object_id = authorization.get_object_id(self.request.path)
-        self._store_permissions(object_id=object_id, replace=True)
-        result['permissions'] = self._build_permissions(object_id=object_id)
+        object_uri = self.context.object_uri
+        self._store_permissions(object_id=object_uri, replace=True)
+        result['permissions'] = self._build_permissions(object_id=object_uri)
         return result
 
     def delete(self):
         result = super(ProtectedResource, self).delete()
 
-        object_id = authorization.get_object_id(self.request.path)
-        self._delete_permissions(object_id=object_id)
+        self._delete_permissions(object_id=self.context.object_uri)
         return result

@@ -89,15 +89,15 @@ class RouteFactory(object):
                           hasattr(service, 'viewset') and
                           hasattr(service, 'resource'))
 
+        object_uri = None
         permission = None
         resource_name = None
-        check_permission = None
         on_collection = False
         get_shared_ids = None
 
         if is_on_resource:
             on_collection = getattr(service, "type", None) == "collection"
-            object_id = get_object_id(request.path)
+            object_uri = get_object_id(request.path)
 
             # Decide what the required unbound permission is depending on the
             # method that's being requested.
@@ -111,7 +111,7 @@ class RouteFactory(object):
                 try:
                     resource.collection.get_record(resource.record_id)
                 except storage_exceptions.RecordNotFoundError:
-                    object_id = service.collection_path.format(
+                    object_uri = service.collection_path.format(
                         **request.matchdict)
                     permission = "create"
                 else:
@@ -121,9 +121,6 @@ class RouteFactory(object):
                 permission = self.method_permissions.get(method)
 
             resource_name = service.viewset.get_name(service.resource)
-            check_permission = functools.partial(
-                request.registry.permission.check_permission,
-                object_id)
 
             if on_collection:
                 record_uri = record_uri_from_collection(request, '*')
@@ -136,14 +133,19 @@ class RouteFactory(object):
         settings = request.registry.settings
         settings_key = 'cliquet.%s_%s_principals' % (resource_name, permission)
         self.allowed_principals = aslist(settings.get(settings_key, ''))
+        self.object_uri = object_uri
         self.on_collection = on_collection
         self.required_permission = permission
         self.resource_name = resource_name
-        self.check_permission = check_permission
         self.get_shared_ids = get_shared_ids
+
+        self._check_permission = request.registry.permission.check_permission
 
         # Partial collections of ProtectedResource:
         self.shared_ids = []
+
+    def check_permission(self, *args, **kwargs):
+        return self._check_permission(self.object_uri, *args, **kwargs)
 
     def fetch_shared_records(self, perm, principals, get_bound_permissions):
         ids = self.get_shared_ids(
@@ -175,4 +177,4 @@ def record_uri_from_collection(request, record_id):
     matchdict = request.matchdict.copy()
     matchdict['id'] = record_id
     record_uri = request.route_path(record_service, **matchdict)
-    return record_uri
+    return get_object_id(record_uri)
