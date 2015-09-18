@@ -41,7 +41,7 @@ class ObtainRecordPermissionTest(PermissionTest):
         self.permission.add_principal_to_ace(record_uri, 'write', 'fxa:user')
         self.resource.record_id = record_id
         self.resource.request.validated = {'data': {}}
-        self.resource.context.object_uri = record_uri
+        self.resource.request.path = record_uri
 
     def test_permissions_are_provided_in_record_get(self):
         result = self.resource.get()
@@ -71,12 +71,14 @@ class SpecifyRecordPermissionTest(PermissionTest):
         super(SpecifyRecordPermissionTest, self).setUp()
         record = self.resource.collection.create_record({})
         record_id = record['id']
-        record_uri = '/articles/%s' % record_id
-        self.permission.add_principal_to_ace(record_uri, 'read', 'fxa:user')
+        self.record_uri = '/articles/%s' % record_id
+        self.permission.add_principal_to_ace(self.record_uri,
+                                             'read',
+                                             'fxa:user')
         self.resource.request.prefixed_userid = 'basicauth:userid'
         self.resource.record_id = record_id
         self.resource.request.validated = {'data': {}}
-        self.resource.context.object_uri = record_uri
+        self.resource.request.path = self.record_uri
 
     def test_write_permission_is_given_to_creator_on_post(self):
         self.resource.context.object_uri = '/articles'
@@ -120,10 +122,9 @@ class SpecifyRecordPermissionTest(PermissionTest):
                          ['basicauth:userid', 'jean-louis'])
 
     def test_permissions_can_be_removed_with_patch_but_keep_current_user(self):
-        perms = {'write': ['jean-louis']}
-        self.resource.request.validated = {'permissions': perms}
-        self.resource.request.method = 'PATCH'
-        result = self.resource.patch()
+        self.permission.add_principal_to_ace(self.record_uri,
+                                             'write',
+                                             'jean-louis')
 
         perms = {'write': []}
         self.resource.request.validated = {'permissions': perms}
@@ -134,15 +135,15 @@ class SpecifyRecordPermissionTest(PermissionTest):
                               'read': ['fxa:user']})
 
     def test_permissions_can_be_removed_with_patch(self):
-        perms = {'write': ['jean-louis']}
-        self.resource.request.validated = {'permissions': perms}
-        self.resource.request.method = 'PATCH'
-        result = self.resource.patch()
+        self.permission.add_principal_to_ace(self.record_uri,
+                                             'write',
+                                             'jean-louis')
 
         perms = {'read': []}
         self.resource.request.validated = {'permissions': perms}
         self.resource.request.method = 'PATCH'
         result = self.resource.patch()
+        self.assertEqual(result['permissions']['read'], [])
         self.assertEqual(sorted(result['permissions']['write']),
                          ['basicauth:userid', 'jean-louis'])
 
@@ -152,24 +153,24 @@ class DeletedRecordPermissionTest(PermissionTest):
         super(DeletedRecordPermissionTest, self).setUp()
         record = self.resource.collection.create_record({})
         self.resource.record_id = record_id = record['id']
-        record_uri = '/articles/%s' % record_id
-        self.resource.context.object_uri = record_uri
-        self.resource.request.route_path.return_value = record_uri
-        self.permission.add_principal_to_ace(record_uri, 'read', 'fxa:user')
+        self.record_uri = '/articles/%s' % record_id
+        self.resource.request.route_path.return_value = self.record_uri
+        self.resource.request.path = self.record_uri
+        self.permission.add_principal_to_ace(self.record_uri,
+                                             'read',
+                                             'fxa:user')
 
     def test_permissions_are_deleted_when_record_is_deleted(self):
-        record_uri = self.resource.context.object_uri
         self.resource.delete()
-        principals = self.permission.object_permission_principals(record_uri,
-                                                                  'read')
+        principals = self.permission.object_permission_principals(
+            self.record_uri, 'read')
         self.assertEqual(len(principals), 0)
 
     def test_permissions_are_deleted_when_collection_is_deleted(self):
-        record_uri = self.resource.context.object_uri
-        self.resource.request.path = '/articles'
+        self.resource.context.on_collection = True
         self.resource.collection_delete()
-        principals = self.permission.object_permission_principals(record_uri,
-                                                                  'read')
+        principals = self.permission.object_permission_principals(
+            self.record_uri, 'read')
         self.assertEqual(len(principals), 0)
 
 

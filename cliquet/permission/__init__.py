@@ -64,6 +64,28 @@ class PermissionBase(object):
         """
         raise NotImplementedError
 
+    def object_permissions(self, object_id):
+        """Return the set of principals for each object permission.
+        :param str object_id: The object_id the permission is set to.
+        :returns: The dictionnary with the list of user principals for
+                  each object permissions
+        :rtype: dict
+        """
+        raise NotImplementedError
+
+    def replace_object_permissions(self, object_id, permissions):
+        """Replace given object permissions.
+        :param str object_id: The object to replace permissions to.
+        :param str permissions: The permissions dict to replace.
+        """
+        raise NotImplementedError
+
+    def delete_object_permissions(self, object_id_match):
+        """Delete all object permissions.
+        :param str object_id: The object_id permissions are set to.
+        """
+        raise NotImplementedError
+
     def object_permission_principals(self, object_id, permission):
         """Return the set of principals of a bound permission
         (unbound permission + object id).

@@ -233,3 +233,68 @@ class Collection(object):
                                    modified_field=self.modified_field,
                                    deleted_field=self.deleted_field,
                                    auth=self.auth)
+
+
+class ProtectedCollection(Collection):
+    permissions_field = '__permissions__'
+
+    def __init__(self, *args, **kwargs):
+        super(ProtectedCollection, self).__init__(*args, **kwargs)
+        # Permission backend.
+        self.permission = None
+        # Object permission id.
+        self.get_permission_object_id = None
+
+    def delete_records(self, filters=None, parent_id=None):
+        """Override the collection DELETE endpoint to clear the permissions
+        of the delete records.
+        """
+        deleted = super(ProtectedCollection, self).delete_records(filters,
+                                                                  parent_id)
+        perm_ids = [self.get_permission_object_id(record_id=r[self.id_field])
+                    for r in deleted]
+        self.permission.delete_object_permissions(perm_ids)
+        return deleted
+
+    def get_record(self, record_id, parent_id=None):
+        record = super(ProtectedCollection, self).get_record(
+            record_id, parent_id)
+        perm_object_id = self.get_permission_object_id(record_id)
+        permissions = self.permission.object_permissions(perm_object_id)
+        record[self.permissions_field] = permissions
+        return record
+
+    def create_record(self, record, parent_id=None, unique_fields=None):
+        permissions = record.pop(self.permissions_field, {})
+        record = super(ProtectedCollection, self).create_record(
+            record, parent_id, unique_fields)
+
+        record_id = record[self.id_field]
+        perm_object_id = self.get_permission_object_id(record_id)
+        permissions = self.permission.replace_object_permissions(
+            perm_object_id, permissions)
+        record[self.permissions_field] = permissions
+
+        return record
+
+    def update_record(self, record, parent_id=None, unique_fields=None):
+        permissions = record.pop(self.permissions_field, {})
+        record = super(ProtectedCollection, self).update_record(
+            record, parent_id, unique_fields)
+
+        record_id = record[self.id_field]
+        perm_object_id = self.get_permission_object_id(record_id)
+        permissions = self.permission.replace_object_permissions(
+            perm_object_id, permissions)
+        record[self.permissions_field] = permissions
+
+        return record
+
+    def delete_record(self, record_id, parent_id=None):
+        record = super(ProtectedCollection, self).delete_record(
+            record_id, parent_id)
+
+        perm_object_id = self.get_permission_object_id(record_id)
+        self.permission.delete_object_permissions(perm_object_id)
+
+        return record

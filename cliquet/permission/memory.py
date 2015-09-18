@@ -97,6 +97,30 @@ class Memory(PermissionBase):
                             objects.add(object_id)
         return objects
 
+    def object_permissions(self, object_id):
+        aces = [k for k in self._store
+                if k.startswith('permission:%s' % object_id)]
+        permissions = {}
+        for ace in aces:
+            _, _, permission = ace.split(':')
+            permissions[permission] = list(self._store[ace])
+        return permissions
+
+    def replace_object_permissions(self, object_id, permissions):
+        for permission, principals in permissions.items():
+            permission_key = 'permission:%s:%s' % (object_id, permission)
+            self._store[permission_key] = principals
+        return permissions
+
+    def delete_object_permissions(self, object_id_list):
+        to_delete = []
+        for key in self._store:
+            _, object_id, _ = key.split(':')
+            if object_id in object_id_list:
+                to_delete.append(key)
+        for k in to_delete:
+            del self._store[k]
+
     def object_permission_authorized_principals(self, object_id, permission,
                                                 get_bound_permissions=None):
         if get_bound_permissions is None:
