@@ -100,6 +100,14 @@ def includeme(config):
     # Public settings registry.
     config.registry.public_settings = {'batch_max_requests'}
 
+    # Helper for notifying events
+    def notify(request, event, *args):
+        klass = config.maybe_dotted('cliquet.events.' + event)
+        event = klass(*(args + (request,)))
+        request.registry.notify(event)
+
+    config.add_request_method(notify, 'notify')
+
     # Setup components.
     for step in aslist(settings['initialization_sequence']):
         step_func = config.maybe_dotted(step)

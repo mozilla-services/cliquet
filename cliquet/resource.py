@@ -264,6 +264,7 @@ class BaseResource(object):
         except storage_exceptions.UnicityError as e:
             record = e.record
 
+        self.request.notify('Created', record)
         return self.postprocess(record)
 
     def collection_delete(self):
