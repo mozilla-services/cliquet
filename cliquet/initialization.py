@@ -208,6 +208,20 @@ def _end_of_life_tween_factory(handler, registry):
     return eos_tween
 
 
+def setup_event_handler(config):
+    settings = config.get_settings()
+
+    def on_new_event(event):
+        key = '{type}_{method}'.format(type=event.type, method=event.method)
+        if key in settings.keys():
+            listener = config.maybe_dotted(settings[key])
+            listener(event)
+        else:
+            logger.debug('no listener was setup for this event')
+
+    config.add_subscriber(on_new_event, NewResourceEvent)
+
+
 def setup_storage(config):
     settings = config.get_settings()
     storage_class = settings['storage_backend']
