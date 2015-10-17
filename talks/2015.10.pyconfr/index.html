@@ -1,0 +1,1489 @@
+<!DOCTYPE html>
+<!--
+  Copyright 2010 Google Inc.
+
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+  Original slides: Marcin Wichary (mwichary@google.com)
+  Modifications: Ernest Delgado (ernestd@google.com)
+                 Alex Russell (slightlyoff@chromium.org)
+
+  landslide modifications: Adam Zapletal (adamzap@gmail.com)
+                           Nicolas Perriault (nperriault@gmail.com)
+-->
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Cliquet</title>
+    <!-- Styles -->
+    
+    <link rel="stylesheet" media="print" href="theme/css/print.css">
+    <link rel="stylesheet" media="screen, projection" href="theme/css/screen.css">
+    
+    
+      
+      <link rel="stylesheet" href="custom.css">
+      
+    
+    <!-- /Styles -->
+    <!-- Javascripts -->
+    
+    <script type="text/javascript" src="theme/js/slides.js"></script>
+    
+    
+    
+    <!-- /Javascripts -->
+</head>
+<body>
+  <div id="blank"></div>
+  <div class="presentation">
+    <div id="current_presenter_notes">
+      <div id="presenter_note"></div>
+    </div>
+    <div class="slides">
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-1">
+          <div class="inner">
+            
+            <header><h1>Cliquet</h1></header>
+            
+            
+            <section><p>A toolkit to build HTTP (micro)services.</p>
+<ul class="simple">
+<li>PyconFR</li>
+<li>October 2015</li>
+<li><a class="reference external" href="https:/cliquet.readthedocs.org">https:/cliquet.readthedocs.org</a></li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              1/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-2">
+          <div class="inner">
+            
+            <header><h1>Highlights</h1></header>
+            
+            
+            <section><blockquote>
+<ul class="simple">
+<li>Origins</li>
+<li>Protocol</li>
+<li>Toolkit</li>
+<li>Conversation</li>
+</ul>
+</blockquote></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              2/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-3">
+          <div class="inner">
+            
+            <header><h1>Origins</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              3/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-4">
+          <div class="inner">
+            
+            <header><h1><em>Origins:</em> The « storage » team</h1></header>
+            
+            
+            <section><ul class="simple">
+<li><a class="reference external" href="http://servicedenuages.fr">http://servicedenuages.fr</a></li>
+<li>&#64;ametaireau, &#64;leplatrem, &#64;Natim, &#64;n1k0, &#64;phrawzty, &#64;tarek_ziade</li>
+<li>Met around 2010 <em>(Makina Corpus, DjangoCon)</em></li>
+<li>Same team in 2015 \o/</li>
+</ul>
+<img alt="images/storage-team.jpg" src="images/storage-team.jpg" style="width: 100%;" /></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              4/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-5">
+          <div class="inner">
+            
+            <header><h1><em>Origins:</em> Reading List server</h1></header>
+            
+            
+            <section><ul class="simple">
+<li>We do APIs.</li>
+<li>CANIHAZ the specs <br /> <em>(Super powers of the newcomer)</em></li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              5/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-6">
+          <div class="inner">
+            
+            <header><h1><em>Origins:</em> Reuse efforts</h1></header>
+            
+            
+            <section><ul class="simple">
+<li>HTTP know-how</li>
+<li>REST API design</li>
+<li>Synchronization protocol</li>
+<li>Production standards</li>
+</ul>
+<p>→ We want <strong>a protocol</strong>.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              6/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-7">
+          <div class="inner">
+            
+            <header><h1><em>Origins:</em> Reuse code</h1></header>
+            
+            
+            <section><ul class="simple">
+<li>Quickstart</li>
+<li>Go live on day #1</li>
+<li>Everything optional and pluggable</li>
+</ul>
+<p>→ We want <strong>a toolkit</strong>.</p>
+<object class="align-right" data="images/cliquet.svg" type="image/svg+xml">
+images/cliquet.svg</object></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              7/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-8">
+          <div class="inner">
+            
+            <header><h1>HTTP Protocol</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              8/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-9">
+          <div class="inner">
+            
+            <header><h1><em>Protocol:</em> Good practices</h1></header>
+            
+            
+            <section><ul class="simple">
+<li>API major version prefix <em>(/v1)</em></li>
+<li>Standard headers <em>(CORS, Content, Authorization, )</em></li>
+<li>Standard status codes <em>(304, 412, 409, ...)</em></li>
+<li>REST CRUD <em>(PUT create|replace, PATCH, ...)</em></li>
+</ul>
+<img alt="images/explain-basics.jpg" class="align-right" src="images/explain-basics.jpg" style="width: 400px;" /></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              9/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-10">
+          <div class="inner">
+            
+            <header><h1><em>Protocol:</em> Service &amp; Operations</h1></header>
+            
+            
+            <section><ul class="simple">
+<li>«Hello» endpoint <tt class="docutils literal">GET /v1/</tt> <br /> <em>(docs URL, settings values)</em></li>
+<li>Monitoring endpoint <em>(</em> <tt class="docutils literal">GET /v1/__heartbeat__</tt> <em>)</em></li>
+<li>Batch multiple requests  <em>(</em> <tt class="docutils literal">POST /v1/batch</tt> <em>)</em></li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              10/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-11">
+          <div class="inner">
+            
+            <header><h1><em>Protocol:</em> Service &amp; Operations</h1></header>
+            
+            
+            <section><ul class="simple">
+<li>Error channel <em>(JSON responses, error codes)</em></li>
+<li>Backoff headers <em>(Maintenance, overload)</em></li>
+<li>End-of-life headers <em>(API Deprecation)</em></li>
+</ul>
+<p>→ Common code in API consumers!</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              11/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-12">
+          <div class="inner">
+            
+            <header><h1><em>Protocol:</em> REST resource</h1></header>
+            
+            
+            <section><p><em>Usual but optional</em></p>
+<ul class="simple">
+<li>JSON payload structure <em>(Bikeshed!)</em></li>
+<li>Querystring syntax <em>(Filter, sort)</em></li>
+<li>Concurrency control <em>(ETags headers)</em></li>
+<li>Polling for changes <em>(Offline sync)</em></li>
+</ul>
+<p><tt class="docutils literal">GET <span class="pre">/v1/articles?status=3</span></tt> <br /> <tt class="docutils literal">GET <span class="pre">/v1/articles?_sort=-added</span></tt> <br /> <tt class="docutils literal">GET <span class="pre">/v1/articles?_since=11290876567</span></tt></p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              12/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-13">
+          <div class="inner">
+            
+            <header><h1><em>Protocol:</em> REST resource</h1></header>
+            
+            
+            <section><ul class="simple">
+<li>Schema validation <em>(Error format)</em></li>
+<li><span style="font-size: 0.8em"> Token based pagination</li>
+<li><span style="font-size: 0.7em"> Permissions</li>
+<li><span style="font-size: 0.6em"> Transactions</li>
+<li>...</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              13/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-14">
+          <div class="inner">
+            
+            <header><h1><em>Protocol:</em> RFC?</h1></header>
+            
+            
+            <section><ul class="simple">
+<li>Empirical approach <em>(Move fast)</em></li>
+<li>Towards stabilization <em>(Going live)</em></li>
+<li>Start with implementation in Python <em>(What else?)</em></li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              14/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-15">
+          <div class="inner">
+            
+            <header><h1>Toolkit</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              15/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-16">
+          <div class="inner">
+            
+            <header><h1><em>Toolkit:</em> Implementation</h1></header>
+            
+            
+            <section><p><em>Cliquet</em> is:</p>
+<ul class="simple">
+<li>an <strong>implementation of the protocol</strong> in Python</li>
+<li>with <strong>good practices</strong> for production</li>
+<li>and <strong>pluggability</strong> in mind.</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              16/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-17">
+          <div class="inner">
+            
+            <header><h1><em>Toolkit:</em> Stack</h1></header>
+            
+            
+            <section><ul class="simple">
+<li>Pyramid <em>(HTTP framework)</em></li>
+<li>Cornice <em>(Reduce REST boilerplate)</em></li>
+</ul>
+<p>→ Beyond scope of Cliquet: as usual.</p></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              17/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-18">
+          <div class="inner">
+            
+            <header><h1><em>Toolkit:</em> Enable</h1></header>
+            
+            
+            <section><pre><span class="hll"><span class="kn">import</span> <span class="nn">cliquet</span>
+</span><span class="kn">from</span> <span class="nn">pyramid.config</span> <span class="kn">import</span> <span class="n">Configurator</span>
+
+<span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">global_config</span><span class="p">,</span> <span class="o">**</span><span class="n">settings</span><span class="p">):</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">Configurator</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="n">settings</span><span class="p">)</span>
+
+<span class="hll">    <span class="n">cliquet</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s">&#39;1.0&#39;</span><span class="p">)</span>
+</span>    <span class="k">return</span> <span class="n">config</span><span class="o">.</span><span class="n">make_wsgi_app</span><span class="p">()</span>
+</pre>
+<p>→ Enjoy !</p>
+<pre><span class="err">$</span> <span class="err">http</span> <span class="err">GET</span> <span class="s2">&quot;http://localhost:8000/v1/__heartbeat__&quot;</span>
+<span class="err">HTTP/</span><span class="mf">1.1</span> <span class="mi">200</span> <span class="err">OK</span>
+<span class="err">...</span>
+<span class="p">{</span>
+    <span class="nt">&quot;cache&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nt">&quot;permission&quot;</span><span class="p">:</span> <span class="kc">true</span><span class="p">,</span>
+    <span class="nt">&quot;storage&quot;</span><span class="p">:</span> <span class="kc">true</span>
+<span class="p">}</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              18/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-19">
+          <div class="inner">
+            
+            <header><h1><em>Toolkit:</em> Custom views</h1></header>
+            
+            
+            <section><p>Use Cliquet abstractions with Pyramid or Cornice !</p>
+<pre><span class="kn">from</span> <span class="nn">cliquet</span> <span class="kn">import</span> <span class="n">Service</span>
+
+<span class="n">score</span> <span class="o">=</span> <span class="n">Service</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s">&quot;score&quot;</span><span class="p">,</span>
+                <span class="n">path</span><span class="o">=</span><span class="s">&#39;/score/{game}&#39;</span><span class="p">,</span>
+                <span class="n">description</span><span class="o">=</span><span class="s">&quot;Store game score&quot;</span><span class="p">)</span>
+
+<span class="nd">@score.post</span><span class="p">(</span><span class="n">schema</span><span class="o">=</span><span class="n">ScoreSchema</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">post_score</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="n">collection_id</span> <span class="o">=</span> <span class="s">&#39;scores-&#39;</span> <span class="o">+</span> <span class="n">request</span><span class="o">.</span><span class="n">match_dict</span><span class="p">[</span><span class="s">&#39;game&#39;</span><span class="p">]</span>
+    <span class="n">user_id</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">authenticated_userid</span>
+    <span class="n">value</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">validated</span>  <span class="c"># c.f. Cornice.</span>
+
+<span class="hll">    <span class="n">storage</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">registry</span><span class="o">.</span><span class="n">storage</span>
+</span><span class="hll">    <span class="n">record</span> <span class="o">=</span> <span class="n">storage</span><span class="o">.</span><span class="n">create</span><span class="p">(</span><span class="n">collection_id</span><span class="p">,</span> <span class="n">user_id</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+</span>    <span class="k">return</span> <span class="n">record</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              19/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-20">
+          <div class="inner">
+            
+            <header><h1><em>Toolkit:</em> Add a REST resource</h1></header>
+            
+            
+            <section><pre><span class="kn">from</span> <span class="nn">cliquet</span> <span class="kn">import</span> <span class="n">resource</span><span class="p">,</span> <span class="n">schema</span>
+
+<span class="k">class</span> <span class="nc">BookmarkSchema</span><span class="p">(</span><span class="n">schema</span><span class="o">.</span><span class="n">ResourceSchema</span><span class="p">):</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">URL</span><span class="p">()</span>
+
+<span class="hll"><span class="nd">@resource.register</span><span class="p">()</span>
+</span><span class="hll"><span class="k">class</span> <span class="nc">Bookmark</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">BaseResource</span><span class="p">):</span>
+</span><span class="hll">    <span class="n">mapping</span> <span class="o">=</span> <span class="n">BookmarkSchema</span><span class="p">()</span>
+</span></pre>
+<p>→ Enjoy !</p>
+<pre><span class="err">$</span> <span class="err">http</span> <span class="err">GET</span> <span class="s2">&quot;http://localhost:8000/v1/bookmarks&quot;</span>
+<span class="err">HTTP/</span><span class="mf">1.1</span> <span class="mi">200</span> <span class="err">OK</span>
+<span class="err">...</span>
+<span class="p">{</span>
+    <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+        <span class="p">{</span>
+            <span class="nt">&quot;url&quot;</span><span class="p">:</span> <span class="s2">&quot;http://cliquet.readthedocs.org&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;id&quot;</span><span class="p">:</span> <span class="s2">&quot;cc103eb5-0c80-40ec-b6f5-dad12e7d975e&quot;</span><span class="p">,</span>
+            <span class="nt">&quot;last_modified&quot;</span><span class="p">:</span> <span class="mi">1437034418940</span><span class="p">,</span>
+        <span class="p">}</span>
+    <span class="p">]</span>
+<span class="p">}</span>
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              20/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-21">
+          <div class="inner">
+            
+            <header><h1><em>Toolkit:</em> Take control</h1></header>
+            
+            
+            <section><p>...of endpoints and behaviour!</p>
+<pre><span class="hll"><span class="nd">@resource.register</span><span class="p">(</span><span class="n">collection_path</span><span class="o">=</span><span class="s">&#39;/user/bookmarks&#39;</span><span class="p">,</span>
+</span><span class="hll">                   <span class="n">record_path</span><span class="o">=</span><span class="s">&#39;/user/bookmarks/{{id}}&#39;</span><span class="p">,</span>
+</span><span class="hll">                   <span class="n">collection_methods</span><span class="o">=</span><span class="p">(</span><span class="s">&#39;GET&#39;</span><span class="p">,))</span>
+</span><span class="k">class</span> <span class="nc">Bookmark</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">BaseResource</span><span class="p">):</span>
+    <span class="n">mapping</span> <span class="o">=</span> <span class="n">BookmarkSchema</span><span class="p">()</span>
+
+<span class="hll">    <span class="k">def</span> <span class="nf">process_record</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">new</span><span class="p">,</span> <span class="n">old</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+</span><span class="hll">        <span class="k">if</span> <span class="n">new</span><span class="p">[</span><span class="s">&#39;device&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">old</span><span class="p">[</span><span class="s">&#39;device&#39;</span><span class="p">]:</span>
+</span><span class="hll">            <span class="n">device</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&#39;User-Agent&#39;</span><span class="p">)</span>
+</span><span class="hll">            <span class="n">new</span><span class="p">[</span><span class="s">&#39;device&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">device</span>
+</span><span class="hll">        <span class="k">return</span> <span class="n">new</span>
+</span></pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              21/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-22">
+          <div class="inner">
+            
+            <header><h1><em>Toolkit:</em> Take control</h1></header>
+            
+            
+            <section><p>...of schema and fields!</p>
+<pre><span class="hll"><span class="kn">import</span> <span class="nn">colander</span>
+</span>
+<span class="k">class</span> <span class="nc">BookmarkSchema</span><span class="p">(</span><span class="n">resource</span><span class="o">.</span><span class="n">ResourceSchema</span><span class="p">):</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="n">schema</span><span class="o">.</span><span class="n">URL</span><span class="p">()</span>
+<span class="hll">    <span class="n">title</span> <span class="o">=</span> <span class="n">colander</span><span class="o">.</span><span class="n">SchemaNode</span><span class="p">(</span><span class="n">colander</span><span class="o">.</span><span class="n">String</span><span class="p">())</span>
+</span><span class="hll">    <span class="n">device</span> <span class="o">=</span> <span class="n">colander</span><span class="o">.</span><span class="n">SchemaNode</span><span class="p">(</span><span class="n">colander</span><span class="o">.</span><span class="n">String</span><span class="p">(),</span> <span class="n">missing</span><span class="o">=</span><span class="s">&#39;&#39;</span><span class="p">)</span>
+</span>
+<span class="hll">    <span class="k">class</span> <span class="nc">Options</span><span class="p">:</span>
+</span><span class="hll">        <span class="n">readonly_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;device&#39;</span><span class="p">,)</span>
+</span><span class="hll">        <span class="n">unique_fields</span> <span class="o">=</span> <span class="p">(</span><span class="s">&#39;url&#39;</span><span class="p">,)</span>
+</span></pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              22/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-23">
+          <div class="inner">
+            
+            <header><h1><em>Toolkit:</em> Pluggability</h1></header>
+            
+            
+            <section><ul class="simple">
+<li>Unplug | Plug | Override</li>
+</ul>
+<img alt="images/cliquet-base.png" class="align-right" src="images/cliquet-base.png" />
+<ul class="simple">
+<li><strong>From configuration</strong></li>
+<li>Lightweight by default</li>
+<li>Abstractions for backends</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              23/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-24">
+          <div class="inner">
+            
+            <header><h1><em>Toolkit:</em> Authentication</h1></header>
+            
+            
+            <section><ul class="simple">
+<li>Pyramid eco-system</li>
+<li>Agnostic <em>(multiauth)</em></li>
+<li>Pluggable <em>(from configuration)</em></li>
+<li>Firefox Account at Mozilla <em>(extension cliquet-fxa)</em></li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              24/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-25">
+          <div class="inner">
+            
+            <header><h1><em>Toolkit:</em> Deployment</h1></header>
+            
+            
+            <section><p>Standard deployment:</p>
+<ul class="simple">
+<li>Flat configuration <em>(.ini, env vars)</em></li>
+<li>Monitoring components <em>(StatsD, Sentry, NewRelic)</em></li>
+<li>Logging renderers <em>(JSON, Heka)</em></li>
+</ul>
+<img alt="images/cloud-services.png" class="align-right" src="images/cloud-services.png" /></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              25/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-26">
+          <div class="inner">
+            
+            <header><h1><em>Toolkit:</em> Configuration</h1></header>
+            
+            
+            <section><p>From <tt class="docutils literal">application.ini</tt>:</p>
+<pre><span class="na">cliquet.storage_backend</span> <span class="o">=</span> <span class="s">cliquet.storage.redis</span>
+<span class="na">cliquet.storage_url</span> <span class="o">=</span> <span class="s">redis://localhost:6379/0</span>
+<span class="na">cliquet.statsd_url</span> <span class="o">=</span> <span class="s">udp://localhost:8125</span>
+<span class="na">cliquet.logging_renderer</span> <span class="o">=</span> <span class="s">cliquet.logs.CustomRenderer</span>
+</pre>
+<p>From environment variables...</p>
+<pre># docker-compose.yml
+db:
+  image: postgres
+  environment:
+    POSTGRES_USER: postgres
+    POSTGRES_PASSWORD: postgres
+web:
+  links:
+   - db
+  environment:
+    CLIQUET_CACHE_BACKEND: cliquet.cache.postgresql
+    CLIQUET_CACHE_URL: postgres://postgres:postgres@db/postgres
+    CLIQUET_STORAGE_BACKEND: cliquet.storage.postgresql
+    CLIQUET_STORAGE_URL: postgres://postgres:postgres@db/postgres
+</pre></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              26/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-27">
+          <div class="inner">
+            
+            <header><h1><em>Toolkit:</em> Profiling</h1></header>
+            
+            
+            <section><p>Using Werkzeug middleware:</p>
+<pre><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">global_config</span><span class="p">,</span> <span class="o">**</span><span class="n">settings</span><span class="p">):</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">Configurator</span><span class="p">(</span><span class="n">settings</span><span class="o">=</span><span class="n">settings</span><span class="p">)</span>
+    <span class="n">cliquet</span><span class="o">.</span><span class="n">initialize</span><span class="p">(</span><span class="n">config</span><span class="p">,</span> <span class="n">__version__</span><span class="p">)</span>
+<span class="hll">    <span class="n">app</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">make_wsgi_app</span><span class="p">()</span>
+</span><span class="hll">    <span class="k">return</span> <span class="n">cliquet</span><span class="o">.</span><span class="n">install_middlewares</span><span class="p">(</span><span class="n">app</span><span class="p">)</span>
+</span></pre>
+<pre><span class="na">cliquet.profiler_enabled</span> <span class="o">=</span> <span class="s">true</span>
+<span class="na">cliquet.profiler_dir</span> <span class="o">=</span> <span class="s">/tmp/profiling</span>
+</pre>
+<img alt="images/profile-example.png" src="images/profile-example.png" style="height: 300px;" /></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              27/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-28">
+          <div class="inner">
+            
+            <header><h1>Microservices ?</h1></header>
+            
+            
+            <section><p><em>Cliquet</em> brings:</p>
+<ul class="simple">
+<li>Standard configuration</li>
+<li>Standard deployment</li>
+<li>Standard monitoring</li>
+<li>Standard service protocol</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              28/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-29">
+          <div class="inner">
+            
+            <header><h1>Microservices ?</h1></header>
+            
+            
+            <section><p>For developers:</p>
+<ul class="simple">
+<li>No boilerplate code</li>
+<li>Focus on business</li>
+<li>Prototypes can go to production :)</li>
+<li>Abstraction for backends</li>
+<li>Reuse API client code</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              29/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-30">
+          <div class="inner">
+            
+            <header><h1>For you ?</h1></header>
+            
+            
+            <section><img alt="images/golden-toothbrush.png" class="align-right" src="images/golden-toothbrush.png" style="width: 50%;" />
+<p><em>Cliquet</em> is not a «<em>golden hammer</em>».</p>
+<ul class="simple">
+<li>Protocol ?</li>
+<li><span style="min-width: 5em">&nbsp;</span> Monitoring ?</li>
+<li><span style="min-width: 5em">&nbsp;</span> <span style="min-width: 5em">&nbsp;</span> Storage|cache ?</li>
+<li><span style="min-width: 5em">&nbsp;</span> <span style="min-width: 5em">&nbsp;</span> <span style="min-width: 5em">&nbsp;</span> CRUD ?</li>
+</ul></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              30/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-31">
+          <div class="inner">
+            
+            <header><h1>Dogfooding</h1></header>
+            
+            
+            <section><ul class="simple">
+<li><em>Reading List</em>, store and synchronize articles</li>
+<li><em>Kinto</em>, a generic storage service <br /> <em>(with JavaScript and Python clients)</em></li>
+<li><em>SyncTo</em>, a proxy to Firefox Sync API for <tt class="docutils literal">kinto.js</tt></li>
+</ul>
+<object class="align-right" data="images/kinto.svg" type="image/svg+xml">
+images/kinto.svg</object></section>
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              31/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+      <!-- slide source: slides.rst -->
+      <div class="slide-wrapper">
+        <div class="slide slide-32">
+          <div class="inner">
+            
+            <header><h1>Conversation</h1></header>
+            
+            
+          </div>
+          <div class="presenter_notes">
+            <header><h1>Presenter Notes</h1></header>
+            <section>
+            
+            </section>
+          </div>
+          <footer>
+            
+            <aside class="source">
+              Source: <a href="slides.rst">slides.rst</a>
+            </aside>
+            
+            <aside class="page_number">
+              32/32
+            </aside>
+          </footer>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  
+  <div id="toc" class="sidebar hidden">
+    <h2>Table of Contents</h2>
+    <table>
+      <caption>Table of Contents</caption>
+      
+      <tr id="toc-row-1">
+        <th><a href="#slide1">Cliquet</a></th>
+        <td><a href="#slide1">1</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-2">
+        <th><a href="#slide2">Highlights</a></th>
+        <td><a href="#slide2">2</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-3">
+        <th><a href="#slide3">Origins</a></th>
+        <td><a href="#slide3">3</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-4">
+        <th><a href="#slide4"><em>Origins:</em> The « storage » team</a></th>
+        <td><a href="#slide4">4</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-5">
+        <th><a href="#slide5"><em>Origins:</em> Reading List server</a></th>
+        <td><a href="#slide5">5</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-6">
+        <th><a href="#slide6"><em>Origins:</em> Reuse efforts</a></th>
+        <td><a href="#slide6">6</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-7">
+        <th><a href="#slide7"><em>Origins:</em> Reuse code</a></th>
+        <td><a href="#slide7">7</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-8">
+        <th><a href="#slide8">HTTP Protocol</a></th>
+        <td><a href="#slide8">8</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-9">
+        <th><a href="#slide9"><em>Protocol:</em> Good practices</a></th>
+        <td><a href="#slide9">9</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-10">
+        <th><a href="#slide10"><em>Protocol:</em> Service &amp; Operations</a></th>
+        <td><a href="#slide10">10</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-11">
+        <th><a href="#slide11"><em>Protocol:</em> Service &amp; Operations</a></th>
+        <td><a href="#slide11">11</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-12">
+        <th><a href="#slide12"><em>Protocol:</em> REST resource</a></th>
+        <td><a href="#slide12">12</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-13">
+        <th><a href="#slide13"><em>Protocol:</em> REST resource</a></th>
+        <td><a href="#slide13">13</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-14">
+        <th><a href="#slide14"><em>Protocol:</em> RFC?</a></th>
+        <td><a href="#slide14">14</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-15">
+        <th><a href="#slide15">Toolkit</a></th>
+        <td><a href="#slide15">15</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-16">
+        <th><a href="#slide16"><em>Toolkit:</em> Implementation</a></th>
+        <td><a href="#slide16">16</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-17">
+        <th><a href="#slide17"><em>Toolkit:</em> Stack</a></th>
+        <td><a href="#slide17">17</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-18">
+        <th><a href="#slide18"><em>Toolkit:</em> Enable</a></th>
+        <td><a href="#slide18">18</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-19">
+        <th><a href="#slide19"><em>Toolkit:</em> Custom views</a></th>
+        <td><a href="#slide19">19</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-20">
+        <th><a href="#slide20"><em>Toolkit:</em> Add a REST resource</a></th>
+        <td><a href="#slide20">20</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-21">
+        <th><a href="#slide21"><em>Toolkit:</em> Take control</a></th>
+        <td><a href="#slide21">21</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-22">
+        <th><a href="#slide22"><em>Toolkit:</em> Take control</a></th>
+        <td><a href="#slide22">22</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-23">
+        <th><a href="#slide23"><em>Toolkit:</em> Pluggability</a></th>
+        <td><a href="#slide23">23</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-24">
+        <th><a href="#slide24"><em>Toolkit:</em> Authentication</a></th>
+        <td><a href="#slide24">24</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-25">
+        <th><a href="#slide25"><em>Toolkit:</em> Deployment</a></th>
+        <td><a href="#slide25">25</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-26">
+        <th><a href="#slide26"><em>Toolkit:</em> Configuration</a></th>
+        <td><a href="#slide26">26</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-27">
+        <th><a href="#slide27"><em>Toolkit:</em> Profiling</a></th>
+        <td><a href="#slide27">27</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-28">
+        <th><a href="#slide28">Microservices ?</a></th>
+        <td><a href="#slide28">28</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-29">
+        <th><a href="#slide29">Microservices ?</a></th>
+        <td><a href="#slide29">29</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-30">
+        <th><a href="#slide30">For you ?</a></th>
+        <td><a href="#slide30">30</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-31">
+        <th><a href="#slide31">Dogfooding</a></th>
+        <td><a href="#slide31">31</a></td>
+      </tr>
+      
+      
+      <tr id="toc-row-32">
+        <th><a href="#slide32">Conversation</a></th>
+        <td><a href="#slide32">32</a></td>
+      </tr>
+      
+      
+    </table>
+  </div>
+  
+  <div id="help" class="sidebar hidden">
+    <h2>Help</h2>
+    <table>
+      <caption>Help</caption>
+      <tr>
+        <th>Table of Contents</th>
+        <td>t</td>
+      </tr>
+      <tr>
+        <th>Exposé</th>
+        <td>ESC</td>
+      </tr>
+      <tr>
+        <th>Full screen slides</th>
+        <td>e</td>
+      </tr>
+      <tr>
+        <th>Presenter View</th>
+        <td>p</td>
+      </tr>
+      <tr>
+        <th>Source Files</th>
+        <td>s</td>
+      </tr>
+      <tr>
+        <th>Slide Numbers</th>
+        <td>n</td>
+      </tr>
+      <tr>
+        <th>Toggle screen blanking</th>
+        <td>b</td>
+      </tr>
+      <tr>
+        <th>Show/hide slide context</th>
+        <td>c</td>
+      </tr>
+      <tr>
+        <th>Notes</th>
+        <td>2</td>
+      </tr>
+      <tr>
+        <th>Help</th>
+        <td>h</td>
+      </tr>
+    </table>
+  </div>
+  <script>main()</script>
+</body>
+</html>
