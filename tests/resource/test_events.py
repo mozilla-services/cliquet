@@ -5,8 +5,9 @@ import webtest
 from pyramid.config import Configurator
 
 from cliquet.events import ResourceChanged, ACTIONS
-from cliquet.tests.testapp import main as testapp
-from cliquet.tests.support import unittest, BaseWebTest, get_request_class
+from cliquet.testing import unittest, BaseWebTest, get_request_class
+
+from ..testapp import main as testapp
 
 
 @contextmanager

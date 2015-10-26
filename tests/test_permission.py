@@ -7,8 +7,7 @@ from cliquet.storage import exceptions
 from cliquet.permission import (PermissionBase, redis as redis_backend,
                                 memory as memory_backend,
                                 postgresql as postgresql_backend)
-
-from .support import unittest, skip_if_no_postgresql
+from cliquet.testing import unittest, skip_if_no_postgresql
 
 
 class PermissionBaseTest(unittest.TestCase):

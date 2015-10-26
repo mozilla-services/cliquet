@@ -3,7 +3,8 @@ from pyramid import httpexceptions
 
 from cliquet.errors import ERRORS, http_error
 
-from .support import BaseWebTest, unittest, authorize, FormattedErrorMixin
+from cliquet.testing import (BaseWebTest, unittest, authorize,
+                             FormattedErrorMixin)
 
 
 class ErrorViewTest(FormattedErrorMixin, BaseWebTest, unittest.TestCase):
@@ -73,9 +74,8 @@ class ErrorViewTest(FormattedErrorMixin, BaseWebTest, unittest.TestCase):
         custom_405 = http_error(httpexceptions.HTTPMethodNotAllowed(),
                                 errno=ERRORS.METHOD_NOT_ALLOWED,
                                 message="Disabled from conf.")
-        with mock.patch(
-                'cliquet.tests.testapp.views.Mushroom._extract_filters',
-                side_effect=custom_405):
+        with mock.patch('testapp.views.Mushroom._extract_filters',
+                        side_effect=custom_405):
             response = self.app.get(self.sample_url,
                                     headers=self.headers, status=405)
         self.assertFormattedError(
@@ -83,9 +83,8 @@ class ErrorViewTest(FormattedErrorMixin, BaseWebTest, unittest.TestCase):
             "Disabled from conf.")
 
     def test_500_is_valid_formatted_error(self):
-        with mock.patch(
-                'cliquet.tests.testapp.views.Mushroom._extract_filters',
-                side_effect=ValueError):
+        with mock.patch('testapp.views.Mushroom._extract_filters',
+                        side_effect=ValueError):
             response = self.app.get(self.sample_url,
                                     headers=self.headers, status=500)
         self.assertFormattedError(
@@ -94,9 +93,8 @@ class ErrorViewTest(FormattedErrorMixin, BaseWebTest, unittest.TestCase):
             "https://github.com/mozilla-services/cliquet/issues/")
 
     def test_info_link_in_error_responses_can_be_configured(self):
-        with mock.patch(
-                'cliquet.tests.testapp.views.Mushroom._extract_filters',
-                side_effect=ValueError):
+        with mock.patch('testapp.views.Mushroom._extract_filters',
+                        side_effect=ValueError):
             link = "https://github.com/mozilla-services/kinto/issues/"
             app = self.get_test_app({'error_info_link': link})
             response = app.get(self.sample_url,
@@ -107,9 +105,8 @@ class ErrorViewTest(FormattedErrorMixin, BaseWebTest, unittest.TestCase):
             link)
 
     def test_503_is_valid_formatted_error(self):
-        with mock.patch(
-                'cliquet.tests.testapp.views.Mushroom._extract_filters',
-                side_effect=httpexceptions.HTTPServiceUnavailable):
+        with mock.patch('testapp.views.Mushroom._extract_filters',
+                        side_effect=httpexceptions.HTTPServiceUnavailable):
             response = self.app.get(self.sample_url,
                                     headers=self.headers, status=503)
         self.assertFormattedError(
@@ -121,9 +118,8 @@ class ErrorViewTest(FormattedErrorMixin, BaseWebTest, unittest.TestCase):
         custom_503 = http_error(httpexceptions.HTTPServiceUnavailable(),
                                 errno=ERRORS.BACKEND,
                                 message="Unable to connect the server.")
-        with mock.patch(
-                'cliquet.tests.testapp.views.Mushroom._extract_filters',
-                side_effect=custom_503):
+        with mock.patch('testapp.views.Mushroom._extract_filters',
+                        side_effect=custom_503):
             response = self.app.get(self.sample_url,
                                     headers=self.headers, status=503)
         self.assertFormattedError(
@@ -132,9 +128,8 @@ class ErrorViewTest(FormattedErrorMixin, BaseWebTest, unittest.TestCase):
 
     def test_500_provides_traceback_on_server(self):
         mock_traceback = mock.patch('logging.traceback.print_exception')
-        with mock.patch(
-                'cliquet.tests.testapp.views.Mushroom._extract_filters',
-                side_effect=ValueError):
+        with mock.patch('testapp.views.Mushroom._extract_filters',
+                        side_effect=ValueError):
             with mock_traceback as mocked_traceback:
                 self.app.get(self.sample_url, headers=self.headers, status=500)
                 self.assertTrue(mocked_traceback.called)

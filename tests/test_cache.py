@@ -7,8 +7,7 @@ from cliquet.utils import psycopg2
 from cliquet.storage import exceptions
 from cliquet.cache import (CacheBase, postgresql as postgresql_backend,
                            redis as redis_backend, memory as memory_backend)
-
-from .support import unittest, skip_if_no_postgresql
+from cliquet.testing import unittest, skip_if_no_postgresql
 
 
 class CacheBaseTest(unittest.TestCase):

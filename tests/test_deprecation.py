@@ -2,9 +2,9 @@ import datetime
 
 import mock
 
-from .support import BaseWebTest, unittest
 from cliquet.errors import ERRORS
 from cliquet.utils import json
+from cliquet.testing import BaseWebTest, unittest
 
 
 class DeprecationTest(BaseWebTest, unittest.TestCase):

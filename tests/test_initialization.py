@@ -7,7 +7,7 @@ from pyramid.events import NewRequest
 
 import cliquet
 from cliquet import initialization
-from .support import unittest
+from cliquet.testing import unittest
 
 
 class InitializationTest(unittest.TestCase):

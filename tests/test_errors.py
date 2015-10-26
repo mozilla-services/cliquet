@@ -2,8 +2,7 @@ import json
 
 from cliquet.errors import send_alert
 from cliquet.utils import decode_header
-
-from .support import unittest, DummyRequest
+from cliquet.testing import unittest, DummyRequest
 
 
 class SendAlertTest(unittest.TestCase):

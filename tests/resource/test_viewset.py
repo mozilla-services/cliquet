@@ -3,8 +3,7 @@ import mock
 
 from cliquet import authorization
 from cliquet.resource import ViewSet, ProtectedViewSet, register_resource
-
-from cliquet.tests.support import unittest
+from cliquet.testing import unittest
 
 
 class FakeViewSet(ViewSet):

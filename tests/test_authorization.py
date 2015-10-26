@@ -2,9 +2,9 @@ import mock
 
 from pyramid.request import Request
 
-from .support import DummyRequest, unittest
 from cliquet.authorization import RouteFactory, AuthorizationPolicy
 from cliquet.storage import exceptions as storage_exceptions
+from cliquet.testing import DummyRequest, unittest
 
 
 class RouteFactoryTest(unittest.TestCase):

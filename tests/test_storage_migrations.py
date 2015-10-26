@@ -4,8 +4,7 @@ import mock
 
 from cliquet.storage import postgresql
 from cliquet.utils import json
-
-from .support import unittest, skip_if_no_postgresql
+from cliquet.testing import unittest, skip_if_no_postgresql
 
 
 @skip_if_no_postgresql

@@ -6,9 +6,10 @@ import six
 from pyramid import httpexceptions
 
 from cliquet.resource import BaseResource
-from cliquet.tests.resource import BaseTest
-from cliquet.tests.support import ThreadMixin
+from cliquet.testing import ThreadMixin
 from cliquet.utils import decode_header
+
+from .resource import BaseTest
 
 
 class SinceModifiedTest(ThreadMixin, BaseTest):

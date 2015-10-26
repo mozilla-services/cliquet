@@ -1,7 +1,7 @@
 import mock
 import requests
 
-from .support import BaseWebTest, unittest
+from cliquet.testing import BaseWebTest, unittest
 
 
 httpOK = requests.models.Response()

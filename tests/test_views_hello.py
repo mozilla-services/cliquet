@@ -1,6 +1,6 @@
 import mock
 
-from .support import BaseWebTest, unittest
+from cliquet.testing import BaseWebTest, unittest
 
 
 class HelloViewTest(BaseWebTest, unittest.TestCase):

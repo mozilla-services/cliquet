@@ -10,9 +10,8 @@ from cliquet.storage import (
     redis as redisbackend, postgresql,
     Sort, StorageBase
 )
-
-from .support import (unittest, ThreadMixin, DummyRequest,
-                      skip_if_travis, skip_if_no_postgresql)
+from cliquet.testing import (unittest, ThreadMixin, DummyRequest,
+                             skip_if_travis, skip_if_no_postgresql)
 
 
 RECORD_ID = '472be9ec-26fe-461b-8282-9c4e4b207ab3'

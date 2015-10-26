@@ -2,8 +2,7 @@ import mock
 
 from cliquet import authentication
 from cliquet import utils
-
-from .support import BaseWebTest, DummyRequest, unittest
+from cliquet.testing import BaseWebTest, DummyRequest, unittest
 
 
 class AuthenticationPoliciesTest(BaseWebTest, unittest.TestCase):

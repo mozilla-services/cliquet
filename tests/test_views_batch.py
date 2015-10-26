@@ -6,7 +6,7 @@ from pyramid.response import Response
 
 from cliquet import DEFAULT_SETTINGS
 from cliquet.views.batch import BatchPayloadSchema, batch as batch_service
-from cliquet.tests.support import BaseWebTest, unittest, DummyRequest
+from cliquet.testing import BaseWebTest, unittest, DummyRequest
 from cliquet.utils import json
 
 

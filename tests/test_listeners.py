@@ -10,7 +10,7 @@ from contextlib import contextmanager
 from cliquet import initialization
 from cliquet.events import ResourceChanged, ACTIONS
 from cliquet.listeners import ListenerBase
-from .support import unittest
+from cliquet.testing import unittest
 
 
 class ListenerSetupTest(unittest.TestCase):

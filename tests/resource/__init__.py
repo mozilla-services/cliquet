@@ -2,7 +2,7 @@ import mock
 
 from cliquet.authorization import RouteFactory
 from cliquet.storage import memory
-from cliquet.tests.support import unittest, DummyRequest
+from cliquet.testing import unittest, DummyRequest
 from cliquet.resource import BaseResource, ProtectedResource
 
 

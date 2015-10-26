@@ -2,8 +2,8 @@ import mock
 
 from pyramid import testing
 
-from cliquet.tests.support import unittest
 from cliquet import statsd
+from cliquet.testing import unittest
 
 
 class TestedClass(object):

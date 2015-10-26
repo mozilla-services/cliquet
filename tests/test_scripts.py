@@ -1,8 +1,7 @@
 import mock
 
 from cliquet.scripts import cliquet as cliquet_script
-
-from .support import unittest
+from cliquet.testing import unittest
 
 
 class InitSchemaTest(unittest.TestCase):

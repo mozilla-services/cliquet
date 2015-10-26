@@ -11,7 +11,7 @@ from cliquet.utils import (
     current_service, encode_header, decode_header
 )
 
-from .support import unittest, DummyRequest
+from cliquet.testing import unittest, DummyRequest
 
 
 class NativeValueTest(unittest.TestCase):
