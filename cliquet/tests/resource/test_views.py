@@ -641,18 +641,35 @@ class CacheControlTest(BaseWebTest, unittest.TestCase):
 class VaryHeaderTest(BaseWebTest, unittest.TestCase):
     collection_url = '/toadstools'
 
+    def setUp(self):
+        super(VaryHeaderTest, self).setUp()
+
+        body = {'data': MINIMALIST_RECORD}
+        resp = self.app.post_json(self.collection_url, body,
+                                  headers=self.headers)
+        self.record = resp.json['data']
+        self.record_url = self.get_item_url()
+
     def get_app_settings(self, extras=None):
         settings = super(VaryHeaderTest, self).get_app_settings(extras)
         settings['toadstool_read_principals'] = 'system.Everyone'
-        settings['moisture_read_principals'] = 'system.Everyone'
         return settings
 
-    def test_vary_header_is_not_set_if_anonymous(self):
+    def test_vary_header_is_not_set_if_anonymous_on_collection_url(self):
         resp = self.app.get(self.collection_url)
         self.assertNotIn('Vary', resp.headers)
 
-    def test_vary_header_is_set_if_authenticated(self):
+    def test_vary_header_is_set_if_authenticated_on_collection_url(self):
         resp = self.app.get(self.collection_url, headers=self.headers)
+        self.assertIn('Vary', resp.headers)
+        self.assertIn('Authorization', resp.headers['Vary'])
+
+    def test_vary_header_is_not_set_if_anonymous_on_record_url(self):
+        resp = self.app.get(self.record_url)
+        self.assertNotIn('Vary', resp.headers)
+
+    def test_vary_header_is_set_if_authenticated_on_record_url(self):
+        resp = self.app.get(self.record_url, headers=self.headers)
         self.assertIn('Vary', resp.headers)
         self.assertIn('Authorization', resp.headers['Vary'])
 
