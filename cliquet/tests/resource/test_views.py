@@ -655,27 +655,30 @@ class VaryHeaderTest(BaseWebTest, unittest.TestCase):
         settings['toadstool_read_principals'] = 'system.Everyone'
         return settings
 
-    def test_vary_header_is_not_set_if_anonymous_on_hello_page(self):
+    def test_vary_header_is_set_if_anonymous_on_hello_page(self):
         resp = self.app.get("/")
-        self.assertNotIn('Vary', resp.headers)
+        self.assertIn('Vary', resp.headers)
+        self.assertIn('Authorization', resp.headers['Vary'])
 
     def test_vary_header_is_set_if_authenticated_on_hello_page(self):
         resp = self.app.get("/", headers=self.headers)
         self.assertIn('Vary', resp.headers)
         self.assertIn('Authorization', resp.headers['Vary'])
 
-    def test_vary_header_is_not_set_if_anonymous_on_collection_url(self):
+    def test_vary_header_is_set_if_anonymous_on_collection_url(self):
         resp = self.app.get(self.collection_url)
-        self.assertNotIn('Vary', resp.headers)
+        self.assertIn('Vary', resp.headers)
+        self.assertIn('Authorization', resp.headers['Vary'])
 
     def test_vary_header_is_set_if_authenticated_on_collection_url(self):
         resp = self.app.get(self.collection_url, headers=self.headers)
         self.assertIn('Vary', resp.headers)
         self.assertIn('Authorization', resp.headers['Vary'])
 
-    def test_vary_header_is_not_set_if_anonymous_on_record_url(self):
+    def test_vary_header_is_set_if_anonymous_on_record_url(self):
         resp = self.app.get(self.record_url)
-        self.assertNotIn('Vary', resp.headers)
+        self.assertIn('Vary', resp.headers)
+        self.assertIn('Authorization', resp.headers['Vary'])
 
     def test_vary_header_is_set_if_authenticated_on_record_url(self):
         resp = self.app.get(self.record_url, headers=self.headers)

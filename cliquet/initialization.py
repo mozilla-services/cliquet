@@ -134,6 +134,9 @@ def setup_authentication(config):
     def on_new_request(event):
         authn_type = getattr(event.request, 'authn_type', None)
 
+        # Add a vary Authorization header
+        event.request.response.vary = ['Authorization']
+
         # Prefix the user id with the authn policy type name.
         user_id = event.request.authenticated_userid
 
@@ -141,9 +144,6 @@ def setup_authentication(config):
         if user_id and authn_type:
             event.request.prefixed_userid = '%s:%s' % (authn_type.lower(),
                                                        user_id)
-
-            # Add a vary Authorization header
-            event.request.response.vary = ['Authorization']
 
     config.add_subscriber(on_new_request, NewRequest)
 
