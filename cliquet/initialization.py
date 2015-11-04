@@ -142,6 +142,9 @@ def setup_authentication(config):
             event.request.prefixed_userid = '%s:%s' % (authn_type.lower(),
                                                        user_id)
 
+            # Add a vary Authorization header
+            event.request.response.vary = ['Authorization']
+
     config.add_subscriber(on_new_request, NewRequest)
 
 

@@ -638,6 +638,25 @@ class CacheControlTest(BaseWebTest, unittest.TestCase):
         self.assertNotIn('Expires', resp.headers)
 
 
+class VaryHeaderTest(BaseWebTest, unittest.TestCase):
+    collection_url = '/toadstools'
+
+    def get_app_settings(self, extras=None):
+        settings = super(VaryHeaderTest, self).get_app_settings(extras)
+        settings['toadstool_read_principals'] = 'system.Everyone'
+        settings['moisture_read_principals'] = 'system.Everyone'
+        return settings
+
+    def test_vary_header_is_not_set_if_anonymous(self):
+        resp = self.app.get(self.collection_url)
+        self.assertNotIn('Vary', resp.headers)
+
+    def test_vary_header_is_set_if_authenticated(self):
+        resp = self.app.get(self.collection_url, headers=self.headers)
+        self.assertIn('Vary', resp.headers)
+        self.assertIn('Authorization', resp.headers['Vary'])
+
+
 class StorageErrorTest(BaseWebTest, unittest.TestCase):
     def __init__(self, *args, **kwargs):
         super(StorageErrorTest, self).__init__(*args, **kwargs)
