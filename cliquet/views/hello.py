@@ -11,7 +11,7 @@ def get_hello(request):
     settings = request.registry.settings
     project_name = settings['project_name']
     data = dict(
-        hello=project_name,
+        name=project_name,
         version=settings['project_version'],
         protocol_version=PROTOCOL_VERSION,
         url=request.route_url(hello.name),

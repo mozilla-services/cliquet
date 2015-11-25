@@ -8,7 +8,7 @@ GET /
 
 The returned value is a JSON mapping containing:
 
-- ``hello``: the name of the service (e.g. ``"reading list"``)
+- ``name``: the name of the service (e.g. ``"reading list"``)
 - ``protocol_version``: the cliquet protocol version (``"2"``)
 - ``version``: complete application/project version (``"X.Y.Z"``)
 - ``url``: absolute URI (without a trailing slash) of the API (*can be used by client to build URIs*)

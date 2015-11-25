@@ -10,7 +10,7 @@ class HelloViewTest(BaseWebTest, unittest.TestCase):
         self.assertEqual(response.json['version'], "0.0.1")
         self.assertEqual(response.json['protocol_version'], "2")
         self.assertEqual(response.json['url'], 'http://localhost/v0/')
-        self.assertEqual(response.json['hello'], 'myapp')
+        self.assertEqual(response.json['name'], 'myapp')
         self.assertEqual(response.json['documentation'],
                          'https://cliquet.rtfd.org/')
 

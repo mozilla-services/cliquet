@@ -7,6 +7,10 @@ This document describes changes between each past release.
 2.12.0 (unreleased)
 -------------------
 
+**Protocol**
+
+- ``hello`` was renamed ``name`` on the hello page property (#595),
+
 **Breaking changes**
 
 - When using *cliquet-fxa*, the setting ``multiauth.policy.fxa.use`` must now
