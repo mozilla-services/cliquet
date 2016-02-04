@@ -1,4 +1,5 @@
 import ast
+import copy
 import hashlib
 import hmac
 import os
@@ -36,6 +37,7 @@ except ImportError:  # pragma: no cover
     sqlalchemy = None
 
 from pyramid import httpexceptions
+from pyramid import urldispatch
 from pyramid.request import Request
 from pyramid.settings import aslist
 from cornice import cors
@@ -311,6 +313,39 @@ def follow_subrequest(request, subrequest, **kwargs):
         new_request.bound_data = subrequest.bound_data
         new_request.parent = getattr(subrequest, 'parent', None)
         return request.invoke_subrequest(new_request, **kwargs), new_request
+
+
+def clone_request(request):
+    clone = request.copy()
+
+    route = request.matched_route
+    if route:
+        clone.matched_route = urldispatch.Route(name=route.name,
+                                                pattern=route.pattern)
+    clone.matchdict = copy.deepcopy(request.matchdict)
+
+    if hasattr(request, 'registry'):
+        clone.registry = request.registry
+
+    # Custom Request methods (added via `config.add_request_method()` in init)
+    # XXX: wish that Pyramid would do that.
+    members = ['current_service', 'current_resource_name',
+               'notify_resource_event', 'prefixed_userid']
+    for member in members:
+        if hasattr(request, member):
+            setattr(clone, member, getattr(request, member))
+
+    # Stuff added by Cornice.
+    if hasattr(request, 'validated'):
+        clone.validated = copy.deepcopy(request.validated)
+    if hasattr(request, 'errors'):
+        clone.errors = request.errors
+
+    # Bound data added by Cliquet.
+    if hasattr(request, 'bound_data'):
+        clone.bound_data = request.bound_data
+
+    return clone
 
 
 def encode_header(value, encoding='utf-8'):

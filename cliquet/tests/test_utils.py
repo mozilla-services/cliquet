@@ -6,10 +6,12 @@ import colander
 import mock
 import six
 from pyramid import httpexceptions
+from pyramid.request import Request
 
 from cliquet.utils import (
     native_value, strip_whitespace, random_bytes_hex, read_env, hmac_digest,
-    current_service, encode_header, decode_header, follow_subrequest
+    current_service, encode_header, decode_header, follow_subrequest,
+    clone_request
 )
 
 from .support import unittest, DummyRequest
@@ -177,3 +179,61 @@ class FollowSubrequestTest(unittest.TestCase):
         _, redirected = follow_subrequest(request, subrequest)
         self.assertEqual(subrequest.parent, redirected.parent)
         self.assertEqual(subrequest.bound_data, redirected.bound_data)
+
+
+class CloneRequestTest(unittest.TestCase):
+
+    def setUp(self):
+        self.original = Request.blank(path='/url')
+        self.original.registry = mock.sentinel.registry
+
+        self.original.bound_data = {'foo': True}
+        self.original.validated = {'foo': True}
+
+        self.original.prefixed_userid = 'fxa:myself'
+        self.original.current_service = property(lambda r: mock.sentinel.serv)
+        self.original.current_resource_name = 'bucket'
+
+        self.clone = clone_request(self.original)
+
+    def test_has_same_basic_attributes(self):
+        self.assertEqual(self.original.registry, self.clone.registry)
+        self.assertEqual(self.original.scheme, self.clone.scheme)
+        self.assertEqual(self.original.path, self.clone.path)
+        self.assertEqual(self.original.method, self.clone.method)
+        self.assertEqual(self.original.GET, self.clone.GET)
+        self.assertEqual(self.original.content_type, self.clone.content_type)
+        self.assertEqual(self.original.matchdict, self.clone.matchdict)
+        self.assertEqual(self.original.matched_route, self.clone.matched_route)
+
+    def test_post_content_is_duplicated(self):
+        original = Request.blank(path='/url', POST='{"foo": 1}')
+        clone = clone_request(original)
+        self.assertEqual(original.body, clone.body)
+        self.assertEqual(original.POST, clone.POST)
+
+    def test_has_copy_of_bound_data(self):
+        self.clone.bound_data['bar'] = True
+        self.assertNotIn('bar', self.original.bound_data)
+
+    def test_has_copy_of_validated_data(self):
+        self.clone.validated['bar'] = True
+        self.assertNotIn('bar', self.original.validated)
+
+    def test_has_copy_of_headers(self):
+        self.clone.headers['Origin'] = 'mit.edu'
+        self.assertNotIn('Origin', self.original.headers)
+
+    def test_has_copy_of_body(self):
+        self.assertEqual(self.original.body, self.clone.body)
+
+    def test_has_basic_methods(self):
+        self.assertTrue(hasattr(self.clone, 'route_path'))
+
+    def test_has_custom_methods(self):
+        self.assertEqual(self.original.prefixed_userid,
+                         self.clone.prefixed_userid)
+        self.assertEqual(self.original.current_service,
+                         self.clone.current_service)
+        self.assertEqual(self.original.current_resource_name,
+                         self.clone.current_resource_name)
