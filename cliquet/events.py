@@ -2,6 +2,7 @@ from collections import OrderedDict
 
 import transaction
 from pyramid.events import NewRequest
+from pyramid.httpexceptions import HTTPException
 
 from cliquet.logs import logger
 from cliquet.utils import strip_uri_prefix, Enum
@@ -55,15 +56,17 @@ def setup_transaction_hook(config):
     When a transaction is committed, events are sent.
     On rollback nothing happens.
     """
-    def _notify_resource_events(success, request):
+    def _notify_resource_events(current, request):
         """Notify the accumulated resource events if transaction succeeds.
         """
-        if success:
-            for event in request.get_resource_events():
-                try:
-                    request.registry.notify(event)
-                except Exception:
-                    logger.error("Unable to notify", exc_info=True)
+        for event in request.get_resource_events():
+            try:
+                request.registry.notify(event)
+            except HTTPException as e:
+                current.doom()  # too late!
+                raise e
+            except Exception:
+                logger.error("Unable to notify", exc_info=True)
 
     def on_new_request(event):
         """When a new request comes in, hook on transaction commit.
@@ -72,8 +75,8 @@ def setup_transaction_hook(config):
         if hasattr(event.request, 'parent'):
             return
         current = transaction.get()
-        current.addAfterCommitHook(_notify_resource_events,
-                                   args=(event.request,))
+        current.addBeforeCommitHook(_notify_resource_events,
+                                    args=(current, event.request,))
 
     config.add_subscriber(on_new_request, NewRequest)
 

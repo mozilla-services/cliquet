@@ -4,6 +4,7 @@ from contextlib import contextmanager
 
 import webtest
 from pyramid.config import Configurator
+from pyramid import httpexceptions
 
 from cliquet.events import ResourceChanged, ResourceRead, ACTIONS
 from cliquet.storage.exceptions import BackendError
@@ -345,6 +346,27 @@ class BatchEventsTest(BaseEventTest, unittest.TestCase):
         self.app.post_json("/batch", body, headers=self.headers,
                            status=503)
         self.assertEqual(len(self.events), 0)
+
+    def test_transaction_is_rolledback_if_listener_raises_http_exception(self):
+        def raising(*args):
+            raise httpexceptions.HTTPTooManyRequests()
+
+        self.config.add_subscriber(raising, ResourceChanged)
+        self.config.commit()
+
+        body = {
+            "defaults": {
+                "method": "POST",
+                "body": self.body,
+            },
+            "requests": [
+                {"path": '/mushrooms'},
+                {"path": '/mushrooms'}
+            ]
+        }
+        self.app.post_json("/batch", body, headers=self.headers, status=429)
+        resp = self.app.get('/mushrooms', headers=self.headers)
+        self.assertEqual(len(resp.json['data']), 0)
 
 
 def load_from_config(config, prefix):
