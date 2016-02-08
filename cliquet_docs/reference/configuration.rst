@@ -103,6 +103,30 @@ permission and the storage backend.
     an empty string to disable it.
 
 
+Background Processes
+====================
+
+Cliquet uses a pool of processes to run some background processes to avoif
+blocking the incoming requests when the task to perform is not impacting
+the response, like asynchronous notifications.
+
+By default, there's a single process worker running in the background,
+but you can change the value with **background.processes**.
+
+
+.. code-block:: ini
+
+    cliquet.background.processes = 4
+
+
+One process is enough if the only task being done in the background is
+notifying redis. But if you start to do longer work in your notifications,
+that are triggered by every incoming requests, you should raise the number
+of workers. There's no magic formula and you should tweak the value
+to find the best compromise.
+
+
+
 Deployment
 ==========
 

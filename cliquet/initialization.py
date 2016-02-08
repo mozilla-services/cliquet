@@ -25,6 +25,7 @@ from cliquet import storage
 from cliquet import permission
 from cliquet.logs import logger
 from cliquet.events import ResourceRead, ResourceChanged, ACTIONS
+from cliquet.workers import get_memory_workers
 
 from pyramid.events import NewRequest, NewResponse
 from pyramid.exceptions import ConfigurationError
@@ -426,6 +427,12 @@ def setup_listeners(config):
                 return
 
         config.add_subscriber(listener, ResourceChanged, **options)
+
+
+def setup_workers(config):
+    settings = config.get_settings()
+    num_workers = int(settings.get('background.processes', 1))
+    config.registry.workers = get_memory_workers(num_workers)
 
 
 def load_default_settings(config, default_settings):

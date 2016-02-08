@@ -84,6 +84,8 @@ class BaseWebTest(object):
         self.storage = self.app.app.registry.storage
         self.cache = self.app.app.registry.cache
         self.permission = self.app.app.registry.permission
+        self.workers = self.app.app.registry.workers
+
         self.headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Basic bWF0OjE='
@@ -122,6 +124,7 @@ class BaseWebTest(object):
         self.storage.flush()
         self.cache.flush()
         self.permission.flush()
+        self.workers.close()
 
 
 class ThreadMixin(object):

@@ -55,6 +55,7 @@ DEFAULT_SETTINGS = {
         'cliquet.initialization.setup_authentication',
         'cliquet.initialization.setup_backoff',
         'cliquet.initialization.setup_statsd',
+        'cliquet.initialization.setup_workers',
         'cliquet.initialization.setup_listeners',
         'cliquet.events.setup_transaction_hook',
     ),
