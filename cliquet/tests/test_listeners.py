@@ -3,6 +3,7 @@ import json
 import uuid
 from contextlib import contextmanager
 from datetime import datetime
+import time
 
 import mock
 from pyramid import testing
@@ -27,6 +28,7 @@ class ListenerSetupTest(unittest.TestCase):
         settings.update(**extra_settings)
         config = testing.setUp(settings=settings)
         config.commit()
+        initialization.setup_workers(config)
         initialization.setup_listeners(config)
         return config
 
@@ -151,6 +153,8 @@ class ListenerCalledTest(unittest.TestCase):
         self.config = testing.setUp()
         self.config.add_settings({'events_pool_size': 1,
                                   'events_url': 'redis://localhost:6379/0'})
+        initialization.setup_workers(self.config)
+        self.config.commit()
         self._redis = create_from_config(self.config, prefix='events_')
         self._size = 0
 
@@ -163,6 +167,9 @@ class ListenerCalledTest(unittest.TestCase):
     def notify(self, event):
         self._save_redis()
         self.config.registry.notify(event)
+        while self.config.registry.workers.in_progress('events'):
+            time.sleep(.1)
+        time.sleep(.1)
 
     @contextmanager
     def redis_listening(self):
@@ -187,7 +194,7 @@ class ListenerCalledTest(unittest.TestCase):
         # okay, we should have the first event in Redis
         last = self._redis.lpop('cliquet.events')
         last = json.loads(last.decode('utf8'))
-        self.assertEqual(last['action'], ACTIONS.CREATE)
+        self.assertEqual(last['action'], ACTIONS.CREATE.value)
 
     def test_notification_is_broken(self):
         with self.redis_listening():
@@ -214,4 +221,4 @@ class ListenerBaseTest(unittest.TestCase):
     def test_not_implemented(self):
         # make sure we can't use the base listener
         listener = ListenerBase()
-        self.assertRaises(NotImplementedError, listener, object())
+        self.assertRaises(NotImplementedError, listener._run, object())

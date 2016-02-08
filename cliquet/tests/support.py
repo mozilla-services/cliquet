@@ -14,6 +14,7 @@ from cornice import errors as cornice_errors
 from pyramid.url import parse_url_overrides
 from pyramid.security import IAuthorizationPolicy, Authenticated, Everyone
 from zope.interface import implementer
+from enum import Enum
 
 from cliquet import DEFAULT_SETTINGS
 from cliquet.authorization import PRIVATE
@@ -83,6 +84,8 @@ class BaseWebTest(object):
         self.storage = self.app.app.registry.storage
         self.cache = self.app.app.registry.cache
         self.permission = self.app.app.registry.permission
+        self.workers = self.app.app.registry.workers
+
         self.headers = {
             'Content-Type': 'application/json',
             'Authorization': 'Basic bWF0OjE='
@@ -121,6 +124,7 @@ class BaseWebTest(object):
         self.storage.flush()
         self.cache.flush()
         self.permission.flush()
+        self.workers.close()
 
 
 class ThreadMixin(object):
@@ -145,6 +149,13 @@ class FormattedErrorMixin(object):
 
     def assertFormattedError(self, response, code, errno, error,
                              message=None, info=None):
+        # make sure we translate Enum instances to their values
+        if isinstance(error, Enum):
+            error = error.value
+
+        if isinstance(errno, Enum):
+            errno = errno.value
+
         self.assertEqual(response.headers['Content-Type'],
                          'application/json; charset=UTF-8')
         self.assertEqual(response.json['code'], code)

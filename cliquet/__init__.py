@@ -55,7 +55,8 @@ DEFAULT_SETTINGS = {
         'cliquet.initialization.setup_authentication',
         'cliquet.initialization.setup_backoff',
         'cliquet.initialization.setup_statsd',
-        'cliquet.initialization.setup_listeners'
+        'cliquet.initialization.setup_listeners',
+        'cliquet.initialization.setup_workers'
     ),
     'event_listeners': '',
     'logging_renderer': 'cliquet.logs.ClassicLogRenderer',

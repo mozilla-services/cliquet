@@ -25,6 +25,7 @@ from cliquet import storage
 from cliquet import permission
 from cliquet.logs import logger
 from cliquet.events import ResourceRead, ResourceChanged, ACTIONS
+from cliquet.workers import get_memory_workers
 
 from pyramid.events import NewRequest, NewResponse
 from pyramid.exceptions import ConfigurationError
@@ -397,7 +398,7 @@ def setup_logging(config):
 
 class EventActionFilter(object):
     def __init__(self, actions, config):
-        self.actions = actions
+        self.actions = [action.value for action in actions]
 
     def phash(self):
         return 'for_actions = %s' % (','.join(self.actions))
@@ -446,7 +447,12 @@ def setup_listeners(config):
             key = 'listeners.%s' % name
             listener = statsd_client.timer(key)(listener.__call__)
 
-        actions = aslist(settings.get(prefix + 'actions', '')) or write_actions
+        actions = aslist(settings.get(prefix + 'actions', ''))
+        if len(actions) > 0:
+            actions = ACTIONS.from_string_list(actions)
+        else:
+            actions = write_actions
+
         resource_names = aslist(settings.get(prefix + 'resources', ''))
         options = dict(for_actions=actions, for_resources=resource_names)
 
@@ -456,6 +462,12 @@ def setup_listeners(config):
                 return
 
         config.add_subscriber(listener, ResourceChanged, **options)
+
+
+def setup_workers(config):
+    settings = config.get_settings()
+    num_workers = int(settings.get('background.processes', 1))
+    config.registry.workers = get_memory_workers(num_workers)
 
 
 def load_default_settings(config, default_settings):

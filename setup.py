@@ -27,6 +27,8 @@ REQUIREMENTS = [
     'requests',
     'six',
     'structlog',
+    'enum34',
+    'dill'
 ]
 
 if installed_with_pypy:
