@@ -8,7 +8,7 @@ DEV_STAMP = $(VENV)/.dev_env_installed.stamp
 INSTALL_STAMP = $(VENV)/.install.stamp
 
 .IGNORE: clean distclean maintainer-clean
-.PHONY: all install virtualenv tests
+.PHONY: all install virtualenv tests docs
 
 OBJECTS = .venv .coverage
 
@@ -61,7 +61,7 @@ distclean: clean
 maintainer-clean: distclean
 	rm -fr .venv/ .tox/
 
-docs: install-dev
+docs:
 	$(VENV)/bin/sphinx-build -a -n -b html -d $(SPHINX_BUILDDIR)/doctrees cliquet_docs $(SPHINX_BUILDDIR)/html
 	@echo
 	@echo "Build finished. The HTML pages are in $(SPHINX_BUILDDIR)/html/index.html"

@@ -15,6 +15,8 @@
 import sys
 import os
 
+__HERE__ = os.path.dirname(os.path.abspath(__file__))
+
 on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
 
 if not on_rtd:  # only import and set the theme if we're building docs locally
@@ -25,9 +27,33 @@ if not on_rtd:  # only import and set the theme if we're building docs locally
 # to specify it
 
 
+def render_resource_docs():
+    import jinja2
+    resource_tpl_file = os.path.join(__HERE__, "api", "generic-resource.tpl")
+    resource_tpl_content = open(resource_tpl_file).read()
+    resource_tpl = jinja2.Template(resource_tpl_content)
+
+    values = {
+        "resource_name": "resource",
+        "record_name": "record",
+        "collection_name": "collection",
+        "collection_url": "/{collection}",
+        "collection_example_url": "/articles",
+        "with_schema": True,
+        "cliquet_changes": True
+    }
+
+    resource_content = resource_tpl.render(**values)
+
+    resouce_rst_file = os.path.join(__HERE__, "api", "resource.rst")
+    open(resouce_rst_file, "w").write(resource_content)
+
+
 def setup(app):
     # path relative to _static
     app.add_stylesheet('theme_overrides.css')
+
+    render_resource_docs()
 
 
 # If extensions (or modules to document with autodoc) are in another directory,

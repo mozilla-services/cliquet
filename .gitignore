@@ -8,3 +8,5 @@
 .tox/
 loadtests/.env.install
 cliquet_docs/_build/
+# Generated from rST template.
+cliquet_docs/api/resource.rst

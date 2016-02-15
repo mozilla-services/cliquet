@@ -1,8 +1,8 @@
 .. _resource-endpoints:
 
-##################
-Resource endpoints
-##################
+####################################
+{{resource_name|capitalize}} endpoints
+####################################
 
 All :term:`endpoints` URLs are prefixed by the major version of the :term:`HTTP API`
 (e.g /v1 for 1.4).
@@ -15,23 +15,26 @@ e.g. the URL for all the endpoints is structured as follows:::
 The full URL prefix will be implied throughout the rest of this document and
 it will only describe the **<further instruction>** part.
 
+{% block collection_get %}
 
-GET /{collection}
-=================
+GET {{collection_url}}
+===={{ "=" * collection_url|count}}
 
+{% block collection_get_description %}
 **Requires authentication**
 
-Returns all records of the current user for this collection.
+Returns all {{record_name}}s of the current user for this collection.
+{% endblock collection_get_description %}
 
 The returned value is a JSON mapping containing:
 
-- ``data``: the list of records, with exhaustive fields;
+- ``data``: the list of {{record_name}}s, with exhaustive fields;
 
-A ``Total-Records`` response header indicates the total number of records
-of the collection.
+A ``Total-Records`` response header indicates the total number of {{record_name}}s
+of the {{collection_name}}.
 
 A ``Last-Modified`` response header provides a human-readable (rounded to second)
-of the current collection timestamp.
+of the current {{collection_name}} timestamp.
 
 For cache and concurrency control, an ``ETag`` response header gives the
 value that consumers can provide in subsequent requests using ``If-Match``
@@ -41,7 +44,7 @@ and ``If-None-Match`` headers (see :ref:`section about timestamps <server-timest
 
 .. code-block:: http
 
-    GET /articles HTTP/1.1
+    GET {{collection_example_url}} HTTP/1.1
     Accept: application/json
     Authorization: Basic bWF0Og==
     Host: localhost:8000
@@ -83,17 +86,17 @@ Filtering
 
 **Single value**
 
-* ``/collection?field=value``
+* ``{{collection_url}}?field=value``
 
 .. **Multiple values**
 ..
-.. * ``/collection?field=1,2``
+.. * ``{{collection_url}}?field=1,2``
 
 **Minimum and maximum**
 
 Prefix attribute name with ``min_`` or ``max_``:
 
-* ``/collection?min_field=4000``
+* ``{{collection_url}}?min_field=4000``
 
 .. note::
 
@@ -108,23 +111,25 @@ Prefix attribute name with ``min_`` or ``max_``:
 
 Prefix attribute with ``in_`` and provide comma-separated values.
 
-* ``/collection?in_status=1,2,3``
+* ``{{collection_url}}?in_status=1,2,3``
 
 **Exclude**
 
 Prefix attribute name with ``not_``:
 
-* ``/collection?not_field=0``
+* ``{{collection_url}}?not_field=0``
 
 **Exclude multiple values**
 
 Prefix attribute name with ``exclude_``:
 
-* ``/collection?exclude_field=0,1``
+* ``{{collection_url}}?exclude_field=0,1``
 
+{% if with_schema %}
 .. note::
 
     Will return an error if a field is unknown.
+{% endif %}
 
 .. note::
 
@@ -134,21 +139,23 @@ Prefix attribute name with ``exclude_``:
 Sorting
 -------
 
-* ``/collection?_sort=-last_modified,field``
+* ``{{collection_url}}?_sort=-last_modified,field``
 
 .. note::
 
     Ordering on a boolean field gives ``true`` values first.
 
+{% if with_schema %}
 .. note::
 
     Will return an error if a field is unknown.
+{% endif %}
 
 
 Counting
 --------
 
-In order to count the number of records, for a specific field value for example,
+In order to count the number of {{record_name}}s, for a specific field value for example,
 without fetching the actual collection, a ``HEAD`` request can be
 used. The ``Total-Records`` response header will then provide the
 total number of records.
@@ -161,15 +168,15 @@ Polling for changes
 
 The ``_since`` parameter is provided as an alias for ``gt_last_modified``.
 
-* ``/collection?_since=1437035923844``
+* ``{{collection_url}}?_since=1437035923844``
 
-When filtering on ``last_modified`` every deleted records will appear in the
+When filtering on ``last_modified`` every deleted {{record_name}}s will appear in the
 list with a ``deleted`` flag and a ``last_modified`` value that corresponds
 to the deletion event.
 
 If the request header ``If-None-Match`` is provided as described in
 the :ref:`section about timestamps <server-timestamps>` and if the
-collection was not changed, a ``304 Not Modified`` response is returned.
+{{collection_name}} was not changed, a ``304 Not Modified`` response is returned.
 
 .. note::
 
@@ -182,17 +189,11 @@ collection was not changed, a ``304 Not Modified`` response is returned.
     it would be returned in the ``ETag`` response header
     (see :ref:`response timestamps <server-timestamps>`).
 
-.. versionchanged:: 2.4::
-
-   ``_to`` was renamed ``_before`` and is now deprecated.
-    It will be supported until the next major version of Cliquet.
-
-
 **Request**:
 
 .. code-block:: http
 
-    GET /articles?_since=1437035923844 HTTP/1.1
+    GET {{collection_example_url}}?_since=1437035923844 HTTP/1.1
     Accept: application/json
     Authorization: Basic bWF0Og==
     Host: localhost:8000
@@ -237,9 +238,9 @@ collection was not changed, a ``304 Not Modified`` response is returned.
 Paginate
 --------
 
-If the ``_limit`` parameter is provided, the number of records returned is limited.
+If the ``_limit`` parameter is provided, the number of {{record_name}}s returned is limited.
 
-If there are more records for this collection than the limit, the
+If there are more {{record_name}}s for this {{collection_name}} than the limit, the
 response will provide a ``Next-Page`` header with the URL for the
 Next-Page.
 
@@ -260,7 +261,8 @@ Partial response
 ----------------
 
 If the ``_fields`` parameter is provided, only the fields specified are returned.
-Fields are separated with a comma.
+Fields are separated with a comma. It is currently not possible to ask
+for nested fields.
 
 This is vital in mobile contexts where bandwidth usage must be optimized.
 
@@ -270,11 +272,12 @@ Nested objects fields are specified using dots (e.g. ``address.street``).
 
     The ``id`` and ``last_modified`` fields are always returned.
 
+
 **Request**:
 
 .. code-block:: http
 
-    GET /articles?_fields=title,url
+    GET {{collection_example_url}}?_fields=title,url
     Accept: application/json
     Authorization: Basic bWF0Og==
     Host: localhost:8000
@@ -322,40 +325,46 @@ List of available URL parameters
 - ``_fields``: filter the fields of the records
 
 
-Filtering, sorting, partial responses and paginating can all be combined together.
+Filtering, sorting, partial responsses and paginating can all be combined together.
 
-* ``/collection?_sort=-last_modified&_limit=100&_fields=title``
+* ``{{collection_url}}?_sort=-last_modified&_limit=100&_fields=title``
 
 
 HTTP Status Codes
 -----------------
 
 * ``200 OK``: The request was processed
-* ``304 Not Modified``: Collection did not change since value in ``If-None-Match`` header
+* ``304 Not Modified``: {{resource_name}} did not change since value in ``If-None-Match`` header
 * ``400 Bad Request``: The request querystring is invalid
-* ``406 Not Acceptable``: The client doesn't accept supported responses Content-Type.
-* ``412 Precondition Failed``: Collection changed since value in ``If-Match`` header
+* ``412 Precondition Failed``: {{resource_name}} changed since value in ``If-Match`` header
+
+{% endblock collection_get %}
 
 
-POST /{collection}
-==================
+{% block collection_post %}
 
+POST {{collection_url}}
+====={{ "=" * collection_url|count}}
+
+{% block collection_post_description %}
 **Requires authentication**
 
-Used to create a record in the collection. The POST body is a JSON mapping
-containing:
+Used to create a record in the collection.
+{% endblock collection_post_description %}
 
-- ``data``: the values of the resource schema fields;
+The POST body is a JSON mapping containing:
+
+- ``data``: the values of the fields;
 - ``permissions``: *optional* a json dict containing the permissions for
-  the record to be created.
+  the {{record_name}} to be created.
 
 The POST response body is a JSON mapping containing:
 
-- ``data``: the newly created record, if all posted values are valid;
+- ``data``: the newly created {{record_name}}, if all posted values are valid;
 - ``permissions``: *optional* a json dict containing the permissions for
-  the requested resource.
+  the created {{record_name}}.
 
-If the request header ``If-Match`` is provided, and if the record has
+If the request header ``If-Match`` is provided, and if the {{collection_name}} has
 changed meanwhile, a ``412 Precondition failed`` error is returned.
 
 
@@ -363,7 +372,7 @@ changed meanwhile, a ``412 Precondition failed`` error is returned.
 
 .. code-block:: http
 
-    POST /articles HTTP/1.1
+    POST {{collection_example_url}} HTTP/1.1
     Accept: application/json
     Authorization: Basic bWF0Og==
     Content-Type: application/json; charset=utf-8
@@ -405,7 +414,6 @@ an error response is returned with status ``400``.
 
 See :ref:`details on error responses <error-responses>`.
 
-
 Conflicts
 ---------
 
@@ -440,8 +448,7 @@ take the value of the created record but is bumped into the future as usual.
 HTTP Status Codes
 -----------------
 
-.. * ``200 OK``: This record already exists, here is the one stored on the database;
-
+* ``200 OK``: This record already exists, here is the one stored on the database;
 * ``201 Created``: The record was created
 * ``400 Bad Request``: The request body is invalid
 * ``406 Not Acceptable``: The client doesn't accept supported responses Content-Type.
@@ -449,25 +456,27 @@ HTTP Status Codes
 * ``412 Precondition Failed``: Collection changed since value in ``If-Match`` header
 * ``415 Unsupported Media Type``: The client request was not sent with a correct Content-Type.
 
-.. versionadded:: 2.13::
-
-  Enforcement of the timestamp value for records has been added.
+{% endblock collection_post %}
 
 
-DELETE /{collection}
-====================
+{% block collection_delete %}
 
+DELETE {{collection_url}}
+======={{ "=" * collection_url|count}}
+
+{% block collection_delete_description %}
 **Requires authentication**
 
 Delete multiple records. **Disabled by default**, see :ref:`configuration`.
+{% endblock collection_delete_description %}
 
 The DELETE response is a JSON mapping containing:
 
-- ``data``: list of records that were deleted, without schema fields.
+- ``data``: list of {{record_name}}s that were deleted, without attributes fields.
 
 It supports the same filtering capabilities as GET.
 
-If the request header ``If-Match`` is provided, and if the collection
+If the request header ``If-Match`` is provided, and if the {{resource_name}}
 has changed meanwhile, a ``412 Precondition failed`` error is returned.
 
 
@@ -475,7 +484,7 @@ has changed meanwhile, a ``412 Precondition failed`` error is returned.
 
 .. code-block:: http
 
-    DELETE /articles HTTP/1.1
+    DELETE {{collection_example_url}} HTTP/1.1
     Accept: application/json
     Authorization: Basic bWF0Og==
     Host: localhost:8000
@@ -515,27 +524,33 @@ HTTP Status Codes
 * ``406 Not Acceptable``: The client doesn't accept supported responses Content-Type.
 * ``412 Precondition Failed``: Collection changed since value in ``If-Match`` header
 
+{% endblock collection_delete %}
 
-GET /{collection}/<id>
-======================
+{% block record_get %}
 
+GET {{collection_url}}/<id>
+===={{"=" * collection_url|count}}=====
+
+
+{% block record_get_description %}
 **Requires authentication**
 
-Returns a specific record by its id. The GET response body is a JSON mapping
-containing:
+Returns a specific record by its id.
+{% endblock record_get_description %}
 
-- ``data``: the record with exhaustive schema fields;
+The GET response body is a JSON mapping containing:
+- ``data``: the {{record_name}} with exhaustive schema fields;
 - ``permissions``: *optional* a json dict containing the permissions for
   the requested record.
 
-If the request header ``If-None-Match`` is provided, and if the record has not
+If the request header ``If-None-Match`` is provided, and if the {{record_name}} has not
 changed meanwhile, a ``304 Not Modified`` is returned.
 
 **Request**:
 
 .. code-block:: http
 
-    GET /articles/d10405bf-8161-46a1-ac93-a1893d160e62 HTTP/1.1
+    GET {{collection_example_url}}/d10405bf-8161-46a1-ac93-a1893d160e62 HTTP/1.1
     Accept: application/json
     Authorization: Basic bWF0Og==
     Host: localhost:8000
@@ -561,91 +576,98 @@ changed meanwhile, a ``304 Not Modified`` is returned.
         }
     }
 
-
 HTTP Status Code
 ----------------
 
 * ``200 OK``: The request was processed
-* ``304 Not Modified``: Record did not change since value in ``If-None-Match`` header
-* ``406 Not Acceptable``: The client doesn't accept supported responses Content-Type.
-* ``412 Precondition Failed``: Record changed since value in ``If-Match`` header
+* ``304 Not Modified``: {{record_name|capitalize}} did not change since value in ``If-None-Match`` header
+* ``412 Precondition Failed``: {{record_name|capitalize}} changed since value in ``If-Match`` header
+
+{% endblock record_get %}
 
 
-DELETE /{collection}/<id>
-=========================
+{% block record_delete %}
 
+DELETE {{collection_url}}/<id>
+======={{"=" * collection_url|count}}=====
+
+{% block record_delete_description %}
 **Requires authentication**
 
 Delete a specific record by its id.
+{% endblock record_delete_description %}
 
-The DELETE response is the record that was deleted. The DELETE response is a JSON mapping containing:
+The DELETE response is a JSON mapping containing:
 
-- ``data``: the record that was deleted, without schema fields.
+- ``data``: the {{record_name}} that was deleted, without attributes fields.
 
-If the record is missing (or already deleted), a ``404 Not Found`` is returned.
+If the {{record_name}} is missing (or already deleted), a ``404 Not Found`` is returned.
 The consumer might decide to ignore it.
 
-If the request header ``If-Match`` is provided, and if the record has
+If the request header ``If-Match`` is provided, and if the {{record_name}} has
 changed meanwhile, a ``412 Precondition failed`` error is returned.
+
+The timestamp value of the deleted {{record_name}} can be enforced via the
+``last_modified`` QueryString parameter.
 
 .. note::
 
-    Once deleted, a record will appear in the collection when polling for changes,
-    with a deleted status (``delete=true``) and will have most of its fields empty.
+    Once deleted, a {{record_name}} will appear in the {{collection_name}} when polling for changes,
+    with a deleted status (``delete=true``) and will have its fields erased.
 
+{% if cliquet_changes %}
+.. versionadded:: 2.13::
 
-Timestamp
----------
-
-When a record is deleted, the timestamp of the collection is incremented.
-
-It is possible to force the timestamp by passing it in the
-querystring with ``?last_modified=<value>``.
-
-If the specified timestamp is in the past, the collection timestamp does not
-take the value of the deleted record but is bumped into the future as usual.
-
+  Enforcement of the timestamp value for {{record_name}}s has been added.
+{% endif %}
 
 HTTP Status Code
 ----------------
 
-* ``200 OK``: The record was deleted
-* ``406 Not Acceptable``: The client doesn't accept supported responses Content-Type.
-* ``412 Precondition Failed``: Record changed since value in ``If-Match`` header
+* ``200 OK``: The {{record_name}} was deleted
+* ``412 Precondition Failed``: The {{record_name}} changed since value in ``If-Match`` header
 
-.. versionadded:: 2.13::
+{% endblock record_delete %}
 
-  Enforcement of the timestamp value for records has been added.
+{% block record_put %}
+
+PUT {{collection_url}}/<id>
+===={{"=" * collection_url|count}}=====
 
 
-PUT /{collection}/<id>
-======================
-
+{% block record_put_description %}
 **Requires authentication**
+Create or replace a {{record_name}} with its id.
+{% endblock record_put_description %}
 
-Create or replace a record with its id. The PUT body is a JSON mapping containing:
+The PUT body is a JSON mapping containing:
 
-- ``data``: the values of the resource schema fields;
+- ``data``: the values of the attributes fields;
 - ``permissions``: *optional* a json dict containing the permissions for
-  the record to be created/replaced.
+  the {{record_name}} to be created/replaced.
 
 The PUT response body is a JSON mapping containing:
 
-- ``data``: the newly created/updated record, if all posted values are valid;
+- ``data``: the newly created/updated {{record_name}}, if all posted values are valid;
 - ``permissions``: *optional* the newly created permissions dict, containing
-  the permissions for the created record.
+  the permissions for the created/updated {{record_name}}.
 
-Validation and conflicts behaviour is similar to creating records (``POST``).
+Validation and conflicts behaviour is similar to creating {{record_name}}s (``POST``).
 
-If the request header ``If-Match`` is provided, and if the record has
+If the request header ``If-Match`` is provided, and if the {{record_name}} has
 changed meanwhile, a ``412 Precondition failed`` error is returned.
 
+{% if cliquet_changes %}
+.. versionadded:: 2.13::
+
+  Enforcement of the timestamp value for {{record_name}}s has been added.
+{% endif %}
 
 **Request**:
 
 .. code-block:: http
 
-    PUT /articles/d10405bf-8161-46a1-ac93-a1893d160e62 HTTP/1.1
+    PUT {{collection_example_url}}/d10405bf-8161-46a1-ac93-a1893d160e62 HTTP/1.1
     Accept: application/json
     Authorization: Basic bWF0Og==
     Content-Type: application/json; charset=utf-8
@@ -698,53 +720,54 @@ take the value of the created/updated record but is bumped into the future as us
 HTTP Status Code
 ----------------
 
-* ``201 Created``: The record was created
-* ``200 OK``: The record was replaced
-* ``400 Bad Request``: The record is invalid
-* ``406 Not Acceptable``: The client doesn't accept supported responses Content-Type.
-* ``409 Conflict``: If replacing this record violates a field unicity constraint
-* ``412 Precondition Failed``: Record was changed or deleted since value
+* ``201 Created``: The {{record_name}} was created
+* ``200 OK``: The {{record_name}} was replaced
+* ``400 Bad Request``: The {{record_name}} is invalid
+* ``409 Conflict``: If replacing this {{record_name}} violates a field unicity constraint
+* ``412 Precondition Failed``: The {{record_name}} was changed or deleted since value
   in ``If-Match`` header.
 * ``415 Unsupported Media Type``: The client request was not sent with a correct Content-Type.
 
 .. note::
 
     A ``If-None-Match: *`` request header can be used to make sure the ``PUT``
-    won't overwrite any record.
+    won't overwrite any {{record_name}}.
 
-.. versionadded:: 2.13::
+{% endblock record_put %}
 
-  Enforcement of the timestamp value for records has been added.
-
+{% block record_patch %}
 
 PATCH /{collection}/<id>
-========================
+======{{"=" * collection_url|count}}=====
 
+{% block record_patch_description %}
 **Requires authentication**
 
-Modify a specific record by its id. The PATCH body is a JSON mapping containing:
+Modify a specific {{record_name}} by its id.
+{% endblock record_patch_description %}
 
-- ``data``: a subset of the resource schema fields (*key-value replace*);
+The PATCH body is a JSON mapping containing:
+
+- ``data``: a subset of the attributes fields (*key-value replace*);
 - ``permissions``: *optional* a json dict containing the permissions for
-  the record to be modified.
+  the {{record_name}} to be modified.
 
 The PATCH response body is a JSON mapping containing:
 
-- ``data``: the modified record (*full by default*);
+- ``data``: the modified {{record_name}} (*full by default*);
 - ``permissions``: *optional* the modified permissions dict, containing
-  the permissions for the modified record.
+  the permissions for the modified {{record_name}}.
 
 If a request header ``Response-Behavior`` is set to ``light``,
 only the fields whose value was changed are returned. If set to
 ``diff``, only the fields whose value became different than
 the one provided are returned.
 
-
 **Request**:
 
 .. code-block:: http
 
-    PATCH /articles/d10405bf-8161-46a1-ac93-a1893d160e62 HTTP/1.1
+    PATCH {{collection_example_url}}/d10405bf-8161-46a1-ac93-a1893d160e62 HTTP/1.1
     Accept: application/json
     Authorization: Basic bWF0Og==
     Content-Type: application/json; charset=utf-8
@@ -778,10 +801,10 @@ the one provided are returned.
     }
 
 
-If the record is missing (or already deleted), a ``404 Not Found`` error is returned.
+If the {{record_name}} is missing (or already deleted), a ``404 Not Found`` error is returned.
 The consumer might decide to ignore it.
 
-If the request header ``If-Match`` is provided, and if the record has
+If the request header ``If-Match`` is provided, and if the {{record_name}} has
 changed meanwhile, a ``412 Precondition failed`` error is returned.
 
 .. note::
@@ -794,17 +817,17 @@ changed meanwhile, a ``412 Precondition failed`` error is returned.
     `JSON-Patch <http://jsonpatch.com>`_ is currently not
     supported. Any help is welcomed though!
 
-
+{% if with_readonly %}
 Read-only fields
 ----------------
 
 If a read-only field is modified, a ``400 Bad request`` error is returned.
-
+{% endif %}
 
 Conflicts
 ---------
 
-If changing a record field violates a field unicity constraint, a
+If changing a {{record_name}} field violates a field unicity constraint, a
 ``409 Conflict`` error response is returned (see :ref:`error channel <error-responses>`).
 
 
@@ -823,18 +846,14 @@ the value is simply ignored and the timestamp is bumped into the future as usual
 HTTP Status Code
 ----------------
 
-* ``200 OK``: The record was modified
-* ``400 Bad Request``: The request body is invalid, or a read-only field was
-  modified
+* ``200 OK``: The {{record_name}} was modified
+* ``400 Bad Request``: The request body is invalid{% if with_readonly %}, or a read-only field was modified{% endif %}
 * ``406 Not Acceptable``: The client doesn't accept supported responses Content-Type.
-* ``409 Conflict``: If modifying this record violates a field unicity constraint
-* ``412 Precondition Failed``: Record changed since value in ``If-Match`` header
+* ``409 Conflict``: If modifying this {{record_name}} violates a field unicity constraint
+* ``412 Precondition Failed``: The {{record_name}} changed since value in ``If-Match`` header
 * ``415 Unsupported Media Type``: The client request was not sent with a correct Content-Type.
 
-.. versionadded:: 2.13::
-
-  Enforcement of the timestamp value for records has been added.
-
+{% endblock record_patch %}
 
 .. _resource-permissions-attribute:
 
@@ -868,12 +887,12 @@ Example:
     }
 
 
-In a response, ``permissions`` contains the current permissions of the record
+In a response, ``permissions`` contains the current permissions of the {{record_name}}
 (i.e. the *modified* version in case of a creation/modification).
 
 .. note::
 
-    When a record is created or modified, the current :term`user id`
+    When a {{record_name}} is created or modified, the current :term`user id`
     **is always added** among the ``write`` principals.
 
 `Read more about leveraging resource permissions <resource-permissions>`.
