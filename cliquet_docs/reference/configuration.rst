@@ -312,6 +312,30 @@ for every resources.
     cliquet.event_listeners.redis.resources = article comment
 
 
+Asynchronous listeners
+::::::::::::::::::::::
+
+By default, listeners are executed synchronously. This means that their
+execution is blocking the request/response cycle.
+
+But listeners can be also be executed asynchronously by setting ``async = true``.
+
+.. code-block:: ini
+
+    cliquet.event_listeners.redis.async = true
+
+.. note::
+
+    By *Cliquet* uses a very simple model for background tasks: it relies on
+    child processes and shared memory. This is convenient for small purposes but
+    has some limitations. For example, background tasks are lost when the Web process
+    restarts.
+
+    Extending Cliquet to support solid and distributed asynchronous job queues
+    like `Celery <http://www.celeryproject.org/>`_ or `Python rq <python-rq.org>`_
+    is trivial. Get in touch with us!
+
+
 Cache
 =====
 

@@ -28,6 +28,8 @@ PROTOCOL_VERSION = '2'
 
 DEFAULT_SETTINGS = {
     'backoff': None,
+    'background.workers': 'cliquet.workers.memory',
+    'background.processes': 1,
     'batch_max_requests': 25,
     'cache_backend': '',
     'cache_url': '',

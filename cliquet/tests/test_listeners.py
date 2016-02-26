@@ -28,7 +28,6 @@ class ListenerSetupTest(unittest.TestCase):
         settings.update(**extra_settings)
         config = testing.setUp(settings=settings)
         config.commit()
-        initialization.setup_workers(config)
         initialization.setup_listeners(config)
         return config
 
@@ -151,8 +150,11 @@ class ListenerCalledTest(unittest.TestCase):
 
     def setUp(self):
         self.config = testing.setUp()
-        self.config.add_settings({'events_pool_size': 1,
-                                  'events_url': 'redis://localhost:6379/0'})
+        self.config.registry.heartbeats = {}
+        self.config.add_settings({
+            'events_pool_size': 1,
+            'events_url': 'redis://localhost:6379/0',
+            'background.workers': 'cliquet.workers.memory'})
         initialization.setup_workers(self.config)
         self.config.commit()
         self._redis = create_from_config(self.config, prefix='events_')
@@ -224,4 +226,10 @@ class ListenerBaseTest(unittest.TestCase):
     def test_not_implemented(self):
         # make sure we can't use the base listener
         listener = ListenerBase()
-        self.assertRaises(NotImplementedError, listener._run, object())
+        self.assertRaises(NotImplementedError, listener, object())
+
+    def test_done_logs_by_default(self):
+        listener = ListenerBase()
+        with mock.patch('cliquet.logger.info') as mocked:
+            listener.done(name='event', res_id=123, success=True, result=None)
+            self.assertTrue(mocked.called)

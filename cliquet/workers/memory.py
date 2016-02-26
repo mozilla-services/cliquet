@@ -6,6 +6,8 @@ from multiprocessing import Pool
 from functools import partial
 from collections import defaultdict, OrderedDict
 
+from . import WorkersBase
+
 try:                # pragma: no cover
     # until dill works with pypy, let's use plain Pickle.
     # https://github.com/uqfoundation/dill/issues/73
@@ -43,7 +45,7 @@ def _run(dumped):       # pragma: no cover
     return True, result
 
 
-class MemoryWorkers(object):
+class Workers(WorkersBase):
     def __init__(self, size=1, result_size_limit=100):
         self.closed = True
         self.initialize(size, result_size_limit)
@@ -113,13 +115,15 @@ class MemoryWorkers(object):
 _WORKERS_PER_PROCESS = {}
 
 
-def get_memory_workers(size=1):
+def load_from_config(config):
+    settings = config.get_settings()
+    num_workers = int(settings.get('background.processes', 1))
     pid = os.getpid()
     if pid in _WORKERS_PER_PROCESS:
         workers = _WORKERS_PER_PROCESS[pid]
         if workers.closed:
-            workers.initialize(size)
+            workers.initialize(num_workers)
     else:
-        _WORKERS_PER_PROCESS[pid] = workers = MemoryWorkers(size)
+        _WORKERS_PER_PROCESS[pid] = workers = Workers(num_workers)
 
     return workers

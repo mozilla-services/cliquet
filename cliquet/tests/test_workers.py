@@ -1,15 +1,25 @@
 import unittest
 import time
-from cliquet.workers import MemoryWorkers
+
+from cliquet.workers import WorkersBase
+from cliquet.workers.memory import Workers
 
 
 def boom():
     raise Exception('ok')
 
 
+class WorkersBaseTest(unittest.TestCase):
+
+    def test_not_implemented(self):
+        # make sure we can't use the base listener
+        workers = WorkersBase()
+        self.assertRaises(NotImplementedError, workers.apply_async, '', None)
+
+
 class TestMemoryWorkers(unittest.TestCase):
     def setUp(self):
-        self.workers = MemoryWorkers(size=1)
+        self.workers = Workers(size=1)
 
     def tearDown(self):
         self.workers.close()

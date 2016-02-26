@@ -19,7 +19,7 @@ class Listener(ListenerBase):
         self._client = client
         self.listname = listname
 
-    def _run(self, event):      # pragma: no cover
+    def __call__(self, event):
         try:
             payload = json.dumps(event.payload)
         except TypeError:

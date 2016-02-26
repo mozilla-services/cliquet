@@ -465,3 +465,25 @@ class PluginsTest(unittest.TestCase):
         }
         resp = app.options('/v0/attachment', headers=headers, status=200)
         self.assertIn('Access-Control-Allow-Origin', resp.headers)
+
+
+class WorkersSetupTest(unittest.TestCase):
+
+    def test_wrong_class(self):
+        settings = {
+            'background.workers': 'cliquet.storage.redis',
+            'storage_url': '',
+            'storage_pool_size': 1
+        }
+        config = Configurator(settings=settings)
+        with self.assertRaises(ConfigurationError):
+            initialization.setup_workers(config)
+
+    def test_registers_heartbeat(self):
+        settings = {
+            'background.workers': 'cliquet.workers.memory',
+        }
+        config = Configurator(settings=settings)
+        config.registry.heartbeats = {}
+        initialization.setup_workers(config)
+        self.assertIsNotNone(config.registry.heartbeats.get('workers'))

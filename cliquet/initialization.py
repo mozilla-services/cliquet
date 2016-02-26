@@ -18,14 +18,14 @@ except ImportError:  # pragma: no cover
 
 import cliquet
 from cliquet import errors
+from cliquet import events
 from cliquet import utils
 from cliquet import statsd
 from cliquet import cache
 from cliquet import storage
 from cliquet import permission
+from cliquet import workers
 from cliquet.logs import logger
-from cliquet.events import ResourceRead, ResourceChanged, ACTIONS
-from cliquet.workers import get_memory_workers
 
 from pyramid.events import NewRequest, NewResponse
 from pyramid.exceptions import ConfigurationError
@@ -362,7 +362,7 @@ def setup_logging(config):
 
 class EventActionFilter(object):
     def __init__(self, actions, config):
-        actions = ACTIONS.from_string_list(actions)
+        actions = events.ACTIONS.from_string_list(actions)
         self.actions = [action.value for action in actions]
 
     def phash(self):
@@ -390,7 +390,9 @@ def setup_listeners(config):
     config.add_subscriber_predicate('for_actions', EventActionFilter)
     config.add_subscriber_predicate('for_resources', EventResourceFilter)
 
-    write_actions = (ACTIONS.CREATE, ACTIONS.UPDATE, ACTIONS.DELETE)
+    write_actions = (events.ACTIONS.CREATE,
+                     events.ACTIONS.UPDATE,
+                     events.ACTIONS.DELETE)
     settings = config.get_settings()
     listeners = aslist(settings['event_listeners'])
 
@@ -412,27 +414,52 @@ def setup_listeners(config):
             key = 'listeners.%s' % name
             listener = statsd_client.timer(key)(listener.__call__)
 
+        # is_async = asbool(settings.get(prefix + 'async', 'false'))
+        # if is_async and hasattr(config.registry, 'workers'):
+        #     # Wrap the listener callback to use background workers.
+        #     def async_listener(event):
+        #         config.registry.workers.apply_async('event',
+        #                                             listener,
+        #                                             (event,),
+        #                                             listener.done)
+
+        #     listener = async_listener
+
+        # Default actions are write actions only.
         actions = aslist(settings.get(prefix + 'actions', ''))
         if len(actions) > 0:
-            actions = ACTIONS.from_string_list(actions)
+            actions = events.ACTIONS.from_string_list(actions)
         else:
             actions = write_actions
 
+        # By default, it listens to every resources.
         resource_names = aslist(settings.get(prefix + 'resources', ''))
         options = dict(for_actions=actions, for_resources=resource_names)
 
-        if ACTIONS.READ in actions:
-            config.add_subscriber(listener, ResourceRead, **options)
+        # If read action is specified, subscribe to read event.
+        if events.ACTIONS.READ in actions:
+            event_cls = events.ResourceRead
+            config.add_subscriber(listener, event_cls, **options)
             if len(actions) == 1:
                 return
 
-        config.add_subscriber(listener, ResourceChanged, **options)
+        # If write action is specified, subscribe to changed event.
+        event_cls = events.ResourceChanged
+        config.add_subscriber(listener, event_cls, **options)
 
 
 def setup_workers(config):
     settings = config.get_settings()
-    num_workers = int(settings.get('background.processes', 1))
-    config.registry.workers = get_memory_workers(num_workers)
+
+    workers_mod = settings['background.workers']
+    workers_mod = config.maybe_dotted(workers_mod)
+    backend = workers_mod.load_from_config(config)
+    if not isinstance(backend, workers.WorkersBase):
+        raise ConfigurationError("Invalid workers backend: %s" % backend)
+    config.registry.workers = backend
+
+    heartbeat = workers.heartbeat(backend)
+    config.registry.heartbeats['workers'] = heartbeat
 
 
 def load_default_settings(config, default_settings):
