@@ -8,7 +8,7 @@ from collections import defaultdict, OrderedDict
 
 from . import WorkersBase
 
-try:
+try:  # pragma: no cover
     # until dill works with pypy, let's use plain Pickle.
     # https://github.com/uqfoundation/dill/issues/73
 
@@ -16,7 +16,7 @@ try:
     # because of the Redis listener.
     #
     # The code below was inspired from dill
-    import __pypy__         # NOQA
+    import __pypy__  # NOQA
     from pickle import loads, dumps, Pickler, UnpicklingError
     from thread import LockType
 
@@ -32,11 +32,11 @@ try:
         pickler.save_reduce(_create_lock, (obj.locked(),), obj=obj)
 
     Pickler.dispatch[LockType] = _save_lock
-except ImportError:     # pragma: no cover
+except ImportError:  # pragma: no cover
     from dill import loads, dumps
 
 
-def _run(dumped):       # pragma: no cover
+def _run(dumped):  # pragma: no cover
     func, args = loads(dumped)
     try:
         result = func(*args)
@@ -79,10 +79,10 @@ class Workers(WorkersBase):
             from cliquet import logger
             logger.error(result)
 
-        if callback is not None:        # pragma: no cover
+        if callback is not None:  # pragma: no cover
             callback(name, res_id, success, result)
 
-    def _init_proc(self, environ):      # pragma: no cover
+    def _init_proc(self, environ):  # pragma: no cover
         os.environ.update(environ)
         signal.signal(signal.SIGINT, signal.SIG_IGN)
 

@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 import json
-import uuid
+import time
 from contextlib import contextmanager
 from datetime import datetime
-import time
 
 import mock
 from pyramid import testing
@@ -199,8 +198,24 @@ class AsyncListenerCalledTest(BaseWebTest, unittest.TestCase):
         self.app.post_json('/mushrooms',
                            {'data': {'name': 'blanc'}},
                            headers=self.headers)
+        # Task running in background.
         tasks = self.workers.in_progress('event')
         self.assertEqual(len(tasks), 1)
+
+        # Wait until done. Inspect Redis queue.
+        while self.workers.in_progress('event'):
+            time.sleep(.05)
+        config = testing.setUp(settings=self.get_app_settings())
+        redis = create_from_config(config, prefix='events_')
+        self.assertEqual(redis.llen('cliquet.events'), 1)
+
+    @mock.patch('cliquet.statsd.Client')
+    def test_statsd_ignores_async_listeners(self, mocked):
+        with mock.patch('cliquet.statsd.Client.timer') as mocked:
+            self.make_app(settings={
+                'statsd_url': 'udp://foo:1234',
+                'statsd_prefix': 'prefix'})
+            self.assertFalse(mocked.called)
 
 
 class ListenerBaseTest(unittest.TestCase):

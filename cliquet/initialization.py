@@ -27,6 +27,7 @@ from cliquet import storage
 from cliquet import permission
 from cliquet import workers
 from cliquet.logs import logger
+from cliquet.listeners import async_listener
 
 from pyramid.events import NewRequest, NewResponse
 from pyramid.exceptions import ConfigurationError
@@ -409,23 +410,21 @@ def setup_listeners(config):
             listener_mod = config.maybe_dotted(settings[prefix + 'use'])
             listener = listener_mod.load_from_config(config, prefix)
 
-        # If StatsD is enabled, monitor execution time of listeners.
-        if getattr(config.registry, "statsd", None):
-            statsd_client = config.registry.statsd
-            key = 'listeners.%s' % name
-            listener_call = statsd_client.timer(key)(listener.__call__)
-        else:
-            listener_call = listener
+        listener_call = listener.__call__
 
         is_async = asbool(settings.get(prefix + 'async', 'false'))
         if is_async and hasattr(config.registry, 'workers'):
             # Wrap the listener callback to use background workers.
-            from cliquet.listeners import async_listener
-
-            lcall = partial(async_listener, config.registry.workers,
-                            listener_call, listener.done)
-
-            listener_call = lcall
+            listener_call = partial(async_listener,
+                                    config.registry.workers,
+                                    listener_call,
+                                    listener.done)
+        else:
+            # If StatsD is enabled, monitor execution time of listeners.
+            if hasattr(config.registry, 'statsd'):
+                statsd_client = config.registry.statsd
+                key = 'listeners.%s' % name
+                listener_call = statsd_client.timer(key)(listener_call)
 
         # Default actions are write actions only.
         actions = aslist(settings.get(prefix + 'actions', ''))

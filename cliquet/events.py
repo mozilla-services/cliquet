@@ -21,6 +21,7 @@ class ACTIONS(Enum):
 
 class _ResourceEvent(object):
     def __init__(self, action, timestamp, request):
+        self.request = request
         resource_name = request.current_resource_name
 
         self.payload = {'timestamp': timestamp,

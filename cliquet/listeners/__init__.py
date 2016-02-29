@@ -1,4 +1,4 @@
-from cliquet import logger
+import copy
 
 
 class ListenerBase(object):
@@ -12,6 +12,7 @@ class ListenerBase(object):
         raise NotImplementedError()
 
     def done(self, name, res_id, success, result):
+        from cliquet import logger
         logger.info("Async listener done.",
                     name=name,
                     result_id=res_id,
@@ -20,4 +21,12 @@ class ListenerBase(object):
 
 
 def async_listener(workers, listener, callback, event):
+    """
+    Execute the specified `listener` on the background workers.
+    """
+    # With asynchronous listeners, the `event` is serialized (pickled).
+    # Since :class:`pyramid.utils.Request` is not pickable, we set it
+    # to None.
+    event = copy.copy(event)
+    event.request = None
     workers.apply_async('event', listener, (event,), callback)
