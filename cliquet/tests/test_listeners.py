@@ -175,16 +175,31 @@ class ListenerCalledTest(unittest.TestCase):
 
 class AsyncListenerCalledTest(BaseWebTest, unittest.TestCase):
 
+    def __init__(self, *args, **kwargs):
+        super(AsyncListenerCalledTest, self).__init__(*args, **kwargs)
+        config = testing.setUp(settings=self.get_app_settings())
+        self._redis = create_from_config(config, prefix='events_')
+        self._size = self._redis.llen('cliquet.events')
+
+    def has_redis_changed(self):
+        return self._redis.llen('cliquet.events') > self._size
+
     def get_app_settings(self, extra=None):
         settings = super(AsyncListenerCalledTest, self).get_app_settings(extra)
         settings.update({
+            # Use memory backend for storage.
+            'storage_backend': 'cliquet.storage.memory',
+            'cache_backend': 'cliquet.cache.memory',
+            'permission_backend': 'cliquet.permission.memory',
+            # Setup built-in Redis listener.
             'event_listeners': 'redis',
             'event_listeners.redis.use': 'cliquet.listeners.redis',
             'event_listeners.redis.pool_size': '1',
             'event_listeners.redis.async': 'true',
-            'background.workers': 'cliquet.workers.memory',
+            'events_url': 'redis://localhost:6379/0',
             'events_pool_size': 1,
-            'events_url': 'redis://localhost:6379/0'})
+            # Setup background workers.
+            'background.workers': 'cliquet.workers.memory'})
         return settings
 
     def test_relies_on_workers_if_listener_is_async(self):
@@ -195,6 +210,7 @@ class AsyncListenerCalledTest(BaseWebTest, unittest.TestCase):
             self.assertTrue(mocked.called)
 
     def test_calls_listener_asynchronously(self):
+        # Create a record (generates an event).
         self.app.post_json('/mushrooms',
                            {'data': {'name': 'blanc'}},
                            headers=self.headers)
@@ -205,9 +221,20 @@ class AsyncListenerCalledTest(BaseWebTest, unittest.TestCase):
         # Wait until done. Inspect Redis queue.
         while self.workers.in_progress('event'):
             time.sleep(.05)
-        config = testing.setUp(settings=self.get_app_settings())
-        redis = create_from_config(config, prefix='events_')
-        self.assertEqual(redis.llen('cliquet.events'), 1)
+        self.assertTrue(self.has_redis_changed())
+
+    def test_fails_silently_if_listener_crashes(self):
+        with broken_redis():
+            self.app.post_json('/mushrooms',
+                               {'data': {'name': 'blanc'}},
+                               headers=self.headers)
+        # Task running in background.
+        tasks = self.workers.in_progress('event')
+        self.assertEqual(len(tasks), 1)
+        while self.workers.in_progress('event'):
+            time.sleep(.05)
+        # Wait until crashed, inspect Redis queue.
+        self.assertFalse(self.has_redis_changed())
 
     @mock.patch('cliquet.statsd.Client')
     def test_statsd_ignores_async_listeners(self, mocked):
