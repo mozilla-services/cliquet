@@ -12,7 +12,7 @@ from cliquet import initialization
 from cliquet.events import ResourceChanged, ResourceRead, ACTIONS
 from cliquet.listeners import ListenerBase
 from cliquet.storage.redis import create_from_config
-from cliquet.tests.support import unittest
+from cliquet.tests.support import unittest, DummyRequest
 
 
 class ListenerSetupTest(unittest.TestCase):
@@ -44,7 +44,7 @@ class ListenerSetupTest(unittest.TestCase):
 
     def test_callback_called_when_action_is_not_filtered(self):
         config = self.make_app()
-        event = ResourceChanged(ACTIONS.CREATE, 123456, [], Request())
+        event = ResourceChanged(ACTIONS.CREATE, 123456, [], DummyRequest())
         config.registry.notify(event)
 
         self.assertTrue(self.redis_mocked.return_value.called)
@@ -53,14 +53,14 @@ class ListenerSetupTest(unittest.TestCase):
         config = self.make_app({
             'event_listeners.redis.actions': 'delete',
         })
-        event = ResourceChanged(ACTIONS.CREATE, 123456, [], Request())
+        event = ResourceChanged(ACTIONS.CREATE, 123456, [], DummyRequest())
         config.registry.notify(event)
 
         self.assertFalse(self.redis_mocked.return_value.called)
 
     def test_callback_called_when_resource_is_not_filtered(self):
         config = self.make_app()
-        event = ResourceChanged(ACTIONS.CREATE, 123456, [], Request())
+        event = ResourceChanged(ACTIONS.CREATE, 123456, [], DummyRequest())
         event.payload['resource_name'] = 'mushroom'
         config.registry.notify(event)
 
@@ -70,7 +70,7 @@ class ListenerSetupTest(unittest.TestCase):
         config = self.make_app({
             'event_listeners.redis.resources': 'toad',
         })
-        event = ResourceChanged(ACTIONS.CREATE, 123456, [], Request())
+        event = ResourceChanged(ACTIONS.CREATE, 123456, [], DummyRequest())
         event.payload['resource_name'] = 'mushroom'
         config.registry.notify(event)
 
@@ -78,7 +78,7 @@ class ListenerSetupTest(unittest.TestCase):
 
     def test_callback_is_not_called_on_read_by_default(self):
         config = self.make_app()
-        event = ResourceRead(ACTIONS.READ, 123456, [], Request())
+        event = ResourceRead(ACTIONS.READ, 123456, [], DummyRequest())
         config.registry.notify(event)
 
         self.assertFalse(self.redis_mocked.return_value.called)
@@ -87,7 +87,7 @@ class ListenerSetupTest(unittest.TestCase):
         config = self.make_app({
             'event_listeners.redis.actions': 'read',
         })
-        event = ResourceRead(ACTIONS.READ, 123456, [], Request())
+        event = ResourceRead(ACTIONS.READ, 123456, [], DummyRequest())
         config.registry.notify(event)
 
         self.assertTrue(self.redis_mocked.return_value.called)
@@ -96,9 +96,9 @@ class ListenerSetupTest(unittest.TestCase):
         config = self.make_app({
             'event_listeners.redis.actions': 'read create delete',
         })
-        event = ResourceRead(ACTIONS.READ, 123456, [], Request())
+        event = ResourceRead(ACTIONS.READ, 123456, [], DummyRequest())
         config.registry.notify(event)
-        event = ResourceChanged(ACTIONS.CREATE, 123456, [], Request())
+        event = ResourceChanged(ACTIONS.CREATE, 123456, [], DummyRequest())
         config.registry.notify(event)
 
         self.assertEqual(self.redis_mocked.return_value.call_count, 2)
@@ -116,46 +116,18 @@ def broken_redis():
     yield
     StrictRedis.lpush = old
 
-UID = str(uuid.uuid4())
-
-
-class Resource(object):
-    record_id = UID
-    timestamp = 123456789
-
-
-class ViewSet(object):
-    def get_name(*args, **kw):
-        return 'collection'
-
-
-class Service(object):
-    viewset = ViewSet()
-
-
-class Match(object):
-    cornice_services = {'watev': Service()}
-    pattern = 'watev'
-
-
-class Request(object):
-    path = '/1/bucket/collection/'
-    prefixed_userid = 'tarek'
-    matchdict = {'id': UID}
-    registry = matched_route = Match()
-    current_resource_name = 'bucket'
-
 
 class ListenerCalledTest(unittest.TestCase):
 
     def setUp(self):
         self.config = testing.setUp()
-        self.config.registry.heartbeats = {}
         self.config.add_settings({
+            'event_listeners': 'redis',
+            'event_listeners.redis.use': 'cliquet.listeners.redis',
+            'event_listeners.redis.pool_size': '1',
             'events_pool_size': 1,
-            'events_url': 'redis://localhost:6379/0',
-            'background.workers': 'cliquet.workers.memory'})
-        initialization.setup_workers(self.config)
+            'events_url': 'redis://localhost:6379/0'})
+        initialization.setup_listeners(self.config)
         self.config.commit()
         self._redis = create_from_config(self.config, prefix='events_')
         self._size = 0
@@ -169,29 +141,12 @@ class ListenerCalledTest(unittest.TestCase):
     def notify(self, event):
         self._save_redis()
         self.config.registry.notify(event)
-        while self.config.registry.workers.in_progress('events'):
-            time.sleep(.1)
-        time.sleep(.1)
-
-    @contextmanager
-    def redis_listening(self):
-        config = self.config
-        listener = 'cliquet.listeners.redis'
-
-        # setting up the redis listener
-        with mock.patch.dict(config.registry.settings,
-                             [('event_listeners', listener),
-                              ('event_listeners.redis.pool_size', '1')]):
-            initialization.setup_listeners(config)
-            config.commit()
-            yield
 
     def test_redis_is_notified(self):
-        with self.redis_listening():
-            # let's trigger an event
-            event = ResourceChanged(ACTIONS.CREATE, 123456, [], Request())
-            self.notify(event)
-            self.assertTrue(self.has_redis_changed())
+        # let's trigger an event
+        event = ResourceChanged(ACTIONS.CREATE, 123456, [], DummyRequest())
+        self.notify(event)
+        self.assertTrue(self.has_redis_changed())
 
         # okay, we should have the first event in Redis
         last = self._redis.lpop('cliquet.events')
@@ -199,26 +154,24 @@ class ListenerCalledTest(unittest.TestCase):
         self.assertEqual(last['action'], ACTIONS.CREATE.value)
 
     def test_notification_is_broken(self):
-        with self.redis_listening():
-            # an event with a bad JSON should silently break and send nothing
-            # date time objects cannot be dumped
-            event2 = ResourceChanged(ACTIONS.CREATE,
-                                     datetime.now(),
-                                     [],
-                                     Request())
-            self.notify(event2)
-            self.assertFalse(self.has_redis_changed())
+        # an event with a bad JSON should silently break and send nothing
+        # date time objects cannot be dumped
+        event2 = ResourceChanged(ACTIONS.CREATE,
+                                 datetime.now(),
+                                 [],
+                                 DummyRequest())
+        self.notify(event2)
+        self.assertFalse(self.has_redis_changed())
 
     def test_redis_is_broken(self):
-        with self.redis_listening():
-            # if the redis call fails, same deal: we should ignore it
-            self._save_redis()
+        # if the redis call fails, same deal: we should ignore it
+        self._save_redis()
 
-            with broken_redis():
-                event = ResourceChanged(ACTIONS.CREATE, 123456, [], Request())
-                self.config.registry.notify(event)
+        with broken_redis():
+            event = ResourceChanged(ACTIONS.CREATE, 123456, [], DummyRequest())
+            self.config.registry.notify(event)
 
-            self.assertFalse(self.has_redis_changed())
+        self.assertFalse(self.has_redis_changed())
 
 
 class ListenerBaseTest(unittest.TestCase):

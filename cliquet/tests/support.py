@@ -50,6 +50,7 @@ class DummyRequest(mock.MagicMock):
             return ''.join([p for p in parts if p])
 
         self.route_url = route_url
+        self.current_resource_name = None
 
     follow_subrequest = follow_subrequest
 
