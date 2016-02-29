@@ -1,6 +1,7 @@
 import warnings
 from datetime import datetime
 from dateutil import parser as dateparser
+from functools import partial
 
 import requests
 import structlog
@@ -419,13 +420,12 @@ def setup_listeners(config):
         is_async = asbool(settings.get(prefix + 'async', 'false'))
         if is_async and hasattr(config.registry, 'workers'):
             # Wrap the listener callback to use background workers.
-            def async_listener(event):
-                config.registry.workers.apply_async('event',
-                                                    listener_call,
-                                                    (event,),
-                                                    listener.done)
+            from cliquet.listeners import async_listener
 
-            listener_call = async_listener
+            lcall = partial(async_listener, config.registry.workers,
+                            listener_call, listener.done)
+
+            listener_call = lcall
 
         # Default actions are write actions only.
         actions = aslist(settings.get(prefix + 'actions', ''))

@@ -17,3 +17,7 @@ class ListenerBase(object):
                     result_id=res_id,
                     success=success,
                     result=result)
+
+
+def async_listener(workers, listener, callback, event):
+    workers.apply_async('event', listener, (event,), callback)
