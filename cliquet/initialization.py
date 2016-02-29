@@ -412,18 +412,20 @@ def setup_listeners(config):
         if getattr(config.registry, "statsd", None):
             statsd_client = config.registry.statsd
             key = 'listeners.%s' % name
-            listener = statsd_client.timer(key)(listener.__call__)
+            listener_call = statsd_client.timer(key)(listener.__call__)
+        else:
+            listener_call = listener
 
-        # is_async = asbool(settings.get(prefix + 'async', 'false'))
-        # if is_async and hasattr(config.registry, 'workers'):
-        #     # Wrap the listener callback to use background workers.
-        #     def async_listener(event):
-        #         config.registry.workers.apply_async('event',
-        #                                             listener,
-        #                                             (event,),
-        #                                             listener.done)
+        is_async = asbool(settings.get(prefix + 'async', 'false'))
+        if is_async and hasattr(config.registry, 'workers'):
+            # Wrap the listener callback to use background workers.
+            def async_listener(event):
+                config.registry.workers.apply_async('event',
+                                                    listener_call,
+                                                    (event,),
+                                                    listener.done)
 
-        #     listener = async_listener
+            listener_call = async_listener
 
         # Default actions are write actions only.
         actions = aslist(settings.get(prefix + 'actions', ''))
@@ -439,13 +441,13 @@ def setup_listeners(config):
         # If read action is specified, subscribe to read event.
         if events.ACTIONS.READ in actions:
             event_cls = events.ResourceRead
-            config.add_subscriber(listener, event_cls, **options)
+            config.add_subscriber(listener_call, event_cls, **options)
             if len(actions) == 1:
                 return
 
         # If write action is specified, subscribe to changed event.
         event_cls = events.ResourceChanged
-        config.add_subscriber(listener, event_cls, **options)
+        config.add_subscriber(listener_call, event_cls, **options)
 
 
 def setup_workers(config):

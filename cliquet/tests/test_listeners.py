@@ -12,7 +12,7 @@ from cliquet import initialization
 from cliquet.events import ResourceChanged, ResourceRead, ACTIONS
 from cliquet.listeners import ListenerBase
 from cliquet.storage.redis import create_from_config
-from cliquet.tests.support import unittest, DummyRequest
+from cliquet.tests.support import unittest, DummyRequest, BaseWebTest
 
 
 class ListenerSetupTest(unittest.TestCase):
@@ -172,6 +172,35 @@ class ListenerCalledTest(unittest.TestCase):
             self.config.registry.notify(event)
 
         self.assertFalse(self.has_redis_changed())
+
+
+class AsyncListenerCalledTest(BaseWebTest, unittest.TestCase):
+
+    def get_app_settings(self, extra=None):
+        settings = super(AsyncListenerCalledTest, self).get_app_settings(extra)
+        settings.update({
+            'event_listeners': 'redis',
+            'event_listeners.redis.use': 'cliquet.listeners.redis',
+            'event_listeners.redis.pool_size': '1',
+            'event_listeners.redis.async': 'true',
+            'background.workers': 'cliquet.workers.memory',
+            'events_pool_size': 1,
+            'events_url': 'redis://localhost:6379/0'})
+        return settings
+
+    def test_relies_on_workers_if_listener_is_async(self):
+        with mock.patch.object(self.workers, 'apply_async') as mocked:
+            self.app.post_json('/mushrooms',
+                               {'data': {'name': 'blanc'}},
+                               headers=self.headers)
+            self.assertTrue(mocked.called)
+
+    def test_calls_listener_asynchronously(self):
+        self.app.post_json('/mushrooms',
+                           {'data': {'name': 'blanc'}},
+                           headers=self.headers)
+        tasks = self.workers.in_progress('event')
+        self.assertEqual(len(tasks), 1)
 
 
 class ListenerBaseTest(unittest.TestCase):

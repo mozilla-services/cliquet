@@ -8,7 +8,7 @@ from collections import defaultdict, OrderedDict
 
 from . import WorkersBase
 
-try:                # pragma: no cover
+try:
     # until dill works with pypy, let's use plain Pickle.
     # https://github.com/uqfoundation/dill/issues/73
 
