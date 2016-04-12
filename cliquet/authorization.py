@@ -77,17 +77,26 @@ class AuthorizationPolicy(object):
 
         # If not allowed on this collection, but some records are shared with
         # the current user, then authorize.
-        # The ShareableResource class will take care of the filtering.
+        # The ShareableResource class will take care of the filtering
+        # using the context.shared_ids attribute.
         is_list_operation = (context.on_collection and
                              'create' not in permission)
         if not allowed and is_list_operation:
-            shared_records = context.fetch_shared_records(
+            context.fetch_shared_records(
                 permission,
                 principals,
                 get_bound_permissions=self.get_bound_permissions)
-            allowed = len(shared_records) > 0
-
+            allowed = self.permits_shared_resource(context,
+                                                   principals,
+                                                   permission)
         return allowed
+
+    def permits_shared_resource(self, context, principals, permission):
+        """Decides whether to authorize the listing of a resource, when
+        the user has no explicit permission.
+        By default, if no record is shared then permission is denied.
+        """
+        return context.shared_ids is not None and len(context.shared_ids) > 0
 
     def principals_allowed_by_permission(self, context, permission):
         raise NotImplementedError()  # PRAGMA NOCOVER

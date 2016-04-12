@@ -1090,7 +1090,7 @@ class ShareableResource(UserResource):
         filters = super(ShareableResource, self)._extract_filters(queryparams)
 
         ids = self.context.shared_ids
-        if ids:
+        if ids is not None:
             filter_by_id = Filter(self.model.id_field, ids, COMPARISON.IN)
             filters.insert(0, filter_by_id)
 
