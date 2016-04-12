@@ -7,7 +7,10 @@ This document describes changes between each past release.
 3.2.0 (unreleased)
 ------------------
 
-- Nothing changed yet.
+**Internal changes**
+
+- Allow authorization policy to inherit from the provided default and override
+  the behaviour of listing shared collections (Kinto/kinto#454)
 
 
 3.1.1 (2016-04-05)
