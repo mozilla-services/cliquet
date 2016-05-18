@@ -16,6 +16,13 @@ from cliquet.utils import (
 from cliquet.logs import logger
 
 
+import warnings
+warnings.warn("cliquet is now deprecated. Please update to kinto.core at "
+              "https://github.com/Kinto/kinto. See "
+              "https://github.com/mozilla-services/cliquet/issues/687 "
+              "for more information.", DeprecationWarning)
+
+
 # Module version, as defined in PEP-0396.
 __version__ = pkg_resources.get_distribution(__package__).version
 
