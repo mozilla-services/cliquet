@@ -16,6 +16,18 @@ from cliquet.utils import (
 from cliquet.logs import logger
 
 
+import warnings
+
+DEPRECATION_MESSAGE = ''.join([
+    "Cliquet is now deprecated. Please update to kinto.core at ",
+    "https://github.com/Kinto/kinto. See ",
+    "https://github.com/mozilla-services/cliquet/issues/687 ",
+    "for more information.",
+    ])
+
+warnings.warn(DEPRECATION_MESSAGE, DeprecationWarning)
+
+
 # Module version, as defined in PEP-0396.
 __version__ = pkg_resources.get_distribution(__package__).version
 
@@ -115,6 +127,7 @@ class Service(CorniceService):
 
 
 def includeme(config):
+
     settings = config.get_settings()
 
     # Heartbeat registry.
@@ -155,6 +168,8 @@ def includeme(config):
     for step in aslist(settings['initialization_sequence']):
         step_func = config.maybe_dotted(step)
         step_func(config)
+
+    logger.warn(DEPRECATION_MESSAGE)
 
     # Custom helpers.
     config.add_request_method(follow_subrequest)

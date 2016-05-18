@@ -1,3 +1,15 @@
+Deprecation Notice
+==================
+
+Cliquet has been folded into the `Kinto
+<https://github.com/Kinto/kinto/>`_ package under the new name
+``kinto.core``. You should update your code to import ``kinto.core``
+instead of ``cliquet``, and all ``cliquet.*`` settings are now
+prefixed with ``kinto`` instead. See
+https://mail.mozilla.org/pipermail/kinto/2016-May/000119.html for more
+about the background for this decision.
+
+
 Cliquet
 =======
 
