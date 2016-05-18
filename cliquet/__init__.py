@@ -17,7 +17,7 @@ from cliquet.logs import logger
 
 
 import warnings
-warnings.warn("cliquet is now deprecated. Please update to kinto.core at "
+warnings.warn("Cliquet is now deprecated. Please update to kinto.core at "
               "https://github.com/Kinto/kinto. See "
               "https://github.com/mozilla-services/cliquet/issues/687 "
               "for more information.", DeprecationWarning)
